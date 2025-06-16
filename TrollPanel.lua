@@ -1,84 +1,89 @@
+-- AvonyXkarpuz Modern Brookhaven Hilesi
+
 local player = game.Players.LocalPlayer
 local char = player.Character or player.CharacterAdded:Wait()
 
+-- GUI Başlat
 local gui = Instance.new("ScreenGui", player.PlayerGui)
-gui.Name = "AvonyXkarpuzGumballHub"
+gui.Name = "AvonyXModernHub"
 
 local main = Instance.new("Frame", gui)
-main.Size = UDim2.new(0, 500, 0, 400)
-main.Position = UDim2.new(0.5, -250, 0.5, -200)
-main.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+main.Size = UDim2.new(0, 550, 0, 400)
+main.Position = UDim2.new(0.5, -275, 0.5, -200)
+main.BackgroundColor3 = Color3.fromRGB(30,30,30)
 main.Active = true
 main.Draggable = true
+main.BorderSizePixel = 0
+main.ClipsDescendants = true
 
+-- Başlık
 local title = Instance.new("TextLabel", main)
 title.Size = UDim2.new(1, 0, 0, 40)
-title.Text = "🌈 AvonyXkarpuz Gumball Hub 🌈"
+title.Text = "🌈 AvonyXkarpuz Brookhaven Hub 🌈"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+title.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 title.TextScaled = true
 
+-- Açılış Müziği
+local sound = Instance.new("Sound", player:WaitForChild("PlayerGui"))
+sound.SoundId = "rbxassetid://1843529636" -- Örnek: iPhone bildirim sesi
+sound.Volume = 5
+sound:Play()
+
+-- Scroll alanı
 local scroll = Instance.new("ScrollingFrame", main)
 scroll.Size = UDim2.new(1, 0, 1, -40)
 scroll.Position = UDim2.new(0, 0, 0, 40)
-scroll.CanvasSize = UDim2.new(0, 0, 0, 800)
+scroll.CanvasSize = UDim2.new(0, 0, 0, 1000)
 scroll.ScrollBarThickness = 8
-scroll.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+scroll.BackgroundColor3 = Color3.fromRGB(35,35,35)
 
--- Buton fonksiyonu
+-- Buton yapıcı
 local function createButton(text, yPos, callback)
     local btn = Instance.new("TextButton", scroll)
-    btn.Size = UDim2.new(1, -10, 0, 40)
+    btn.Size = UDim2.new(1, -10, 0, 50)
     btn.Position = UDim2.new(0, 5, 0, yPos)
     btn.Text = text
-    btn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+    btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
     btn.TextColor3 = Color3.new(1,1,1)
     btn.TextScaled = true
+    btn.BorderSizePixel = 0
     btn.MouseButton1Click:Connect(callback)
 end
 
--- Fly özelliği
-local flying = false
-local bg, bv
-createButton("Fly Aç / Kapat", 0, function()
-    local hrp = char:FindFirstChild("HumanoidRootPart")
-    if not hrp then return end
+local y = 0
 
-    if not flying then
-        flying = true
-        bg = Instance.new("BodyGyro", hrp)
-        bv = Instance.new("BodyVelocity", hrp)
-        bg.P = 9e4
-        bg.MaxTorque = Vector3.new(9e9,9e9,9e9)
-        bv.MaxForce = Vector3.new(9e9,9e9,9e9)
+-- Mobil Fly (dokunma tuşları için basit fly)
+createButton("Mobil Fly Aç/Kapat", y, function()
+    local flying = false
+    local bv = Instance.new("BodyVelocity", char.HumanoidRootPart)
+    bv.MaxForce = Vector3.new(9e9, 9e9, 9e9)
 
-        game:GetService("RunService").Heartbeat:Connect(function()
-            if flying and hrp then
-                bg.CFrame = CFrame.new(hrp.Position, hrp.Position + player:GetMouse().Hit.lookVector)
-                bv.Velocity = player:GetMouse().Hit.lookVector * 50
-            end
-        end)
+    local userInput = game:GetService("UserInputService")
+    flying = not flying
+
+    if flying then
+        bv.Velocity = Vector3.new(0,50,0)
     else
-        flying = false
-        if bg then bg:Destroy() end
-        if bv then bv:Destroy() end
+        bv:Destroy()
     end
 end)
+y = y + 60
 
--- Speed özelliği
-createButton("Speed x3 / Normal", 50, function()
+-- Speed
+createButton("Speed x3 / Normal", y, function()
     local hum = char:FindFirstChildOfClass("Humanoid")
     if hum then
         hum.WalkSpeed = hum.WalkSpeed > 16 and 16 or 48
     end
 end)
+y = y + 60
 
--- NoClip özelliği
+-- NoClip
 local noclip = false
-createButton("NoClip Aç / Kapat", 100, function()
+createButton("NoClip Aç/Kapat", y, function()
     noclip = not noclip
 end)
-
 game:GetService("RunService").Stepped:Connect(function()
     if noclip then
         for _,v in pairs(char:GetDescendants()) do
@@ -88,17 +93,21 @@ game:GetService("RunService").Stepped:Connect(function()
         end
     end
 end)
+y = y + 60
 
--- İsim rainbow
-createButton("İsmi Rainbow Yap", 150, function()
-    local rpName = char:FindFirstChild("Head"):FindFirstChild("OriginalSize")
-    if rpName then
-        while wait(0.2) do
-            local r = math.random()
-            local g = math.random()
-            local b = math.random()
-            char.Head.BrickColor = BrickColor.new(Color3.new(r,g,b))
+-- Rainbow isim
+createButton("RP İsmini Rainbow Yap", y, function()
+    while true do
+        for i = 0, 1, 0.1 do
+            char.Head.BrickColor = BrickColor.new(Color3.fromHSV(i, 1, 1))
+            wait(0.1)
         end
     end
 end)
+y = y + 60
 
+-- Paneli küçült / kapat
+createButton("Paneli Küçült", y, function()
+    main.Visible = not main.Visible
+end)
+y = y + 60
