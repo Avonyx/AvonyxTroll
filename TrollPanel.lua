@@ -1,129 +1,114 @@
--- AvonyXkarpuzHup | Modern Rainbow Brookhaven GUI
+-- AvonyXkarpuzHup Modern Panel
 
-local RunService = game:GetService("RunService")
 local ScreenGui = Instance.new("ScreenGui")
 local MainFrame = Instance.new("Frame")
-local TabsFrame = Instance.new("Frame")
-local ContentFrame = Instance.new("Frame")
-local CloseButton = Instance.new("TextButton")
-local MinimizeButton = Instance.new("TextButton")
+local LeftMenu = Instance.new("Frame")
+local RightPanel = Instance.new("Frame")
+local Title = Instance.new("TextLabel")
 
-ScreenGui.Name = "AvonyXkarpuzHup"
+local TrollButton = Instance.new("TextButton")
+local FlyButton = Instance.new("TextButton")
+local RainbowButton = Instance.new("TextButton")
+local SoundButton = Instance.new("TextButton")
+
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.Name = "AvonyXkarpuzHup"
 
-MainFrame.Name = "MainFrame"
+-- Main Frame
 MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-MainFrame.BorderSizePixel = 0
-MainFrame.Position = UDim2.new(0.2, 0, 0.2, 0)
-MainFrame.Size = UDim2.new(0, 600, 0, 400)
+MainFrame.Size = UDim2.new(0, 500, 0, 300)
+MainFrame.Position = UDim2.new(0.25, 0, 0.25, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 MainFrame.Active = true
 MainFrame.Draggable = true
 
-TabsFrame.Name = "TabsFrame"
-TabsFrame.Parent = MainFrame
-TabsFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-TabsFrame.BorderSizePixel = 0
-TabsFrame.Size = UDim2.new(0, 120, 1, 0)
+-- Title
+Title.Parent = MainFrame
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+Title.Text = "AvonyXkarpuzHup"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.SourceSansBold
+Title.TextSize = 20
 
-ContentFrame.Name = "ContentFrame"
-ContentFrame.Parent = MainFrame
-ContentFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-ContentFrame.BorderSizePixel = 0
-ContentFrame.Position = UDim2.new(0, 120, 0, 0)
-ContentFrame.Size = UDim2.new(1, -120, 1, 0)
+-- Left Menu
+LeftMenu.Parent = MainFrame
+LeftMenu.Size = UDim2.new(0, 120, 1, -30)
+LeftMenu.Position = UDim2.new(0, 0, 0, 30)
+LeftMenu.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 
-CloseButton.Name = "CloseButton"
-CloseButton.Parent = MainFrame
-CloseButton.Text = "X"
-CloseButton.Size = UDim2.new(0, 30, 0, 30)
-CloseButton.Position = UDim2.new(1, -30, 0, 0)
-CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-CloseButton.MouseButton1Click:Connect(function()
-    ScreenGui:Destroy()
-end)
+-- Right Panel
+RightPanel.Parent = MainFrame
+RightPanel.Size = UDim2.new(1, -120, 1, -30)
+RightPanel.Position = UDim2.new(0, 120, 0, 30)
+RightPanel.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 
-MinimizeButton.Name = "MinimizeButton"
-MinimizeButton.Parent = MainFrame
-MinimizeButton.Text = "-"
-MinimizeButton.Size = UDim2.new(0, 30, 0, 30)
-MinimizeButton.Position = UDim2.new(1, -60, 0, 0)
-MinimizeButton.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
-MinimizeButton.MouseButton1Click:Connect(function()
-    ContentFrame.Visible = not ContentFrame.Visible
-    TabsFrame.Visible = not TabsFrame.Visible
-end)
-
-local function clearContent()
-    for _, child in ipairs(ContentFrame:GetChildren()) do
-        if not child:IsA("UIListLayout") then
-            child:Destroy()
-        end
-    end
+-- Left Buttons
+local function createMenuButton(name, yPos)
+    local btn = Instance.new("TextButton")
+    btn.Parent = LeftMenu
+    btn.Size = UDim2.new(1, -10, 0, 40)
+    btn.Position = UDim2.new(0, 5, 0, yPos)
+    btn.Text = name
+    btn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    return btn
 end
 
-local function createContent(text)
-    clearContent()
-    local label = Instance.new("TextLabel")
-    label.Text = text
-    label.Size = UDim2.new(1, 0, 1, 0)
-    label.BackgroundTransparency = 1
-    label.TextColor3 = Color3.new(1,1,1)
-    label.TextScaled = true
-    label.Parent = ContentFrame
-end
+local trollBtn = createMenuButton("Troll", 10)
+local flyBtn = createMenuButton("Fly", 60)
+local rainbowBtn = createMenuButton("Rainbow", 110)
 
-local function createTab(name, action)
-    local button = Instance.new("TextButton")
-    button.Text = name
-    button.Parent = TabsFrame
-    button.Size = UDim2.new(1, 0, 0, 40)
-    button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-    button.TextColor3 = Color3.new(1,1,1)
-    button.MouseButton1Click:Connect(action)
-end
+-- Add functionality
+trollBtn.MouseButton1Click:Connect(function()
+    for _, v in pairs(RightPanel:GetChildren()) do if v:IsA("TextButton") then v:Destroy() end end
 
-createTab("Troll", function()
-    createContent("Troll Özellikleri Açıldı")
+    local soundBtn = Instance.new("TextButton")
+    soundBtn.Parent = RightPanel
+    soundBtn.Size = UDim2.new(0, 200, 0, 40)
+    soundBtn.Position = UDim2.new(0, 20, 0, 20)
+    soundBtn.Text = "Play Joker Laugh"
+    soundBtn.MouseButton1Click:Connect(function()
+        local s = Instance.new("Sound", game.Workspace)
+        s.SoundId = "rbxassetid://138186576"
+        s.Volume = 10
+        s:Play()
+    end)
 end)
 
-createTab("Fly", function()
-    createContent("Fly Özellikleri Açıldı")
+flyBtn.MouseButton1Click:Connect(function()
+    for _, v in pairs(RightPanel:GetChildren()) do if v:IsA("TextButton") then v:Destroy() end end
+
+    local flyStart = Instance.new("TextButton")
+    flyStart.Parent = RightPanel
+    flyStart.Size = UDim2.new(0, 200, 0, 40)
+    flyStart.Position = UDim2.new(0, 20, 0, 20)
+    flyStart.Text = "Enable Fly"
+    flyStart.MouseButton1Click:Connect(function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/RobloxHackerYT/FlyScript/main/Fly.lua"))()
+    end)
 end)
 
-createTab("Araç", function()
-    createContent("Araç Özellikleri Açıldı")
-end)
+rainbowBtn.MouseButton1Click:Connect(function()
+    for _, v in pairs(RightPanel:GetChildren()) do if v:IsA("TextButton") then v:Destroy() end end
 
-createTab("Görünüm", function()
-    createContent("Görünüm Özellikleri Açıldı")
-end)
-
--- Rainbow Panel Rengi
-spawn(function()
-    while RunService.RenderStepped:Wait() do
-        local h = tick() % 5 / 5
-        local color = Color3.fromHSV(h, 1, 1)
-        MainFrame.BackgroundColor3 = color
-    end
-end)
-
--- Rainbow İsim
-spawn(function()
-    while wait(0.5) do
+    local rainbowStart = Instance.new("TextButton")
+    rainbowStart.Parent = RightPanel
+    rainbowStart.Size = UDim2.new(0, 200, 0, 40)
+    rainbowStart.Position = UDim2.new(0, 20, 0, 20)
+    rainbowStart.Text = "Activate Rainbow Name"
+    rainbowStart.MouseButton1Click:Connect(function()
         local player = game.Players.LocalPlayer
-        if player and player.Character then
-            local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
-            if humanoid then
-                humanoid.DisplayName = "🌈 AvonyXkarpuzHup 🌈"
-            end
+        while true do
+            player.Character.Humanoid.DisplayName = "AvonyXkarpuzHup"
+            player.Character.Humanoid.DisplayName = string.format("<font color='#%02X%02X%02X'>%s</font>", math.random(255), math.random(255), math.random(255), "AvonyXkarpuzHup")
+            wait(0.1)
         end
-    end
+    end)
 end)
 
--- Açılış sesi (iPhone bildirim)
-local sound = Instance.new("Sound")
-sound.SoundId = "rbxassetid://9118828566"
-sound.Volume = 5
-sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-sound:Play()
+-- Açılış müziği
+local startSound = Instance.new("Sound", game.Workspace)
+startSound.SoundId = "rbxassetid://9118823103"
+startSound.Volume = 10
+startSound:Play()
