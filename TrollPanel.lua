@@ -1,58 +1,36 @@
-    -- 🌈 Avonyx Yeni Troll Panel V1
-local plr = game.Players.LocalPlayer
+local sg = Instance.new("ScreenGui")
+sg.Name = "AvonyxTrollPanel"
+sg.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
--- İsim değiştir
-plr.Name = "AvonyxKarpuzHup"
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 300, 0, 200)
+frame.Position = UDim2.new(0.5, -150, 0.5, -100)
+frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+frame.BorderSizePixel = 4
+frame.BorderColor3 = Color3.fromRGB(255, 0, 0)
+frame.Parent = sg
 
--- Basit GUI panel
-local gui = Instance.new("ScreenGui", plr.PlayerGui)
-gui.Name = "AvonyxTrollPanel"
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 50)
+title.Position = UDim2.new(0, 0, 0, 0)
+title.Text = "🌈 Avonyx Troll Panel 🌈"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+title.Parent = frame
 
-local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 300, 0, 150)
-frame.Position = UDim2.new(0.5, -150, 0.5, -75)
-frame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(0.8, 0, 0, 50)
+button.Position = UDim2.new(0.1, 0, 0.5, -25)
+button.Text = "Troll Ses Çal"
+button.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+button.TextColor3 = Color3.fromRGB(255, 255, 255)
+button.Parent = frame
 
-local label = Instance.new("TextLabel", frame)
-label.Size = UDim2.new(1, 0, 0.3, 0)
-label.Text = "🔥 Avonyx Troll Panel"
-label.TextScaled = true
-label.BackgroundTransparency = 1
-
-local btnKill = Instance.new("TextButton", frame)
-btnKill.Size = UDim2.new(1, 0, 0.35, 0)
-btnKill.Position = UDim2.new(0, 0, 0.3, 0)
-btnKill.Text = "💀 Herkesi Öldür"
-btnKill.TextScaled = true
-btnKill.MouseButton1Click:Connect(function()
-    for _,v in pairs(game.Players:GetPlayers()) do
-        if v ~= plr and v.Character and v.Character:FindFirstChild("Humanoid") then
-            v.Character.Humanoid.Health = 0
-        end
-    end
+button.MouseButton1Click:Connect(function()
+    local sound = Instance.new("Sound", game.Workspace)
+    sound.SoundId = "rbxassetid://142376088" -- funny sound id
+    sound.Volume = 5
+    sound:Play()
 end)
 
-local btnSound = Instance.new("TextButton", frame)
-btnSound.Size = UDim2.new(1, 0, 0.35, 0)
-btnSound.Position = UDim2.new(0, 0, 0.65, 0)
-btnSound.Text = "🔊 Troll Ses Yay"
-btnSound.TextScaled = true
-btnSound.MouseButton1Click:Connect(function()
-    local s = Instance.new("Sound", workspace)
-    s.SoundId = "rbxassetid://142376088" -- troll scream
-    s.Volume = 10
-    s:Play()
-end)
-local ScreenGui = Instance.new("ScreenGui")
-local Frame = Instance.new("Frame")
-
-ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-ScreenGui.Name = "AvonyxTrollPanel"
-
-Frame.Size = UDim2.new(0, 300, 0, 200)
-Frame.Position = UDim2.new(0.5, -150, 0.5, -100)
-Frame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-Frame.Parent = ScreenGui
-
-print("Avonyx Troll Panel açıldı!")
-
+print("✅ Avonyx Troll Panel açıldı!")
