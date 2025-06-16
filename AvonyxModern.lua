@@ -3,42 +3,69 @@ local gui = Instance.new("ScreenGui", player.PlayerGui)
 gui.Name = "AvonyXkarpuzHup"
 gui.ResetOnSpawn = false
 
-local bar = Instance.new("Frame", gui)
-bar.Size = UDim2.new(0, 160, 1, 0)
-bar.Position = UDim2.new(0, 0, 0, 0)
-bar.BackgroundColor3 = Color3.fromHSV(0,1,1)
+local mainFrame = Instance.new("Frame", gui)
+mainFrame.Size = UDim2.new(0, 600, 0, 450)
+mainFrame.Position = UDim2.new(0.5, -300, 0.5, -225)
+mainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+Instance.new("UICorner", mainFrame)
 
-spawn(function()
-    while wait() do
-        bar.BackgroundColor3 = Color3.fromHSV(tick() % 5 / 5, 1, 1)
-    end
+local topBar = Instance.new("Frame", mainFrame)
+topBar.Size = UDim2.new(1, 0, 0, 30)
+topBar.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+Instance.new("UICorner", topBar)
+
+local title = Instance.new("TextLabel", topBar)
+title.Size = UDim2.new(1, -60, 1, 0)
+title.Text = "AvonyXkarpuzHup | Ultimate Panel"
+title.TextColor3 = Color3.new(1,1,1)
+title.TextSize = 16
+title.Font = Enum.Font.GothamBold
+title.BackgroundTransparency = 1
+
+local closeBtn = Instance.new("TextButton", topBar)
+closeBtn.Size = UDim2.new(0,30,0,30)
+closeBtn.Position = UDim2.new(1, -30, 0, 0)
+closeBtn.Text = "X"
+closeBtn.TextColor3 = Color3.new(1,0,0)
+closeBtn.BackgroundTransparency = 1
+closeBtn.MouseButton1Click:Connect(function() gui:Destroy() end)
+
+local minimizeBtn = Instance.new("TextButton", topBar)
+minimizeBtn.Size = UDim2.new(0,30,0,30)
+minimizeBtn.Position = UDim2.new(1, -60, 0, 0)
+minimizeBtn.Text = "-"
+minimizeBtn.TextColor3 = Color3.new(1,1,1)
+minimizeBtn.BackgroundTransparency = 1
+local minimized = false
+minimizeBtn.MouseButton1Click:Connect(function()
+    minimized = not minimized
+    content.Visible = not minimized
 end)
 
-local yOffset = 0
+local content = Instance.new("ScrollingFrame", mainFrame)
+content.Position = UDim2.new(0,10,0,40)
+content.Size = UDim2.new(1, -20, 1, -50)
+content.CanvasSize = UDim2.new(0,0,0,0)
+content.ScrollBarThickness = 6
+content.BackgroundTransparency = 1
 
-local function createButton(name, action)
-    local btn = Instance.new("TextButton", bar)
-    btn.Size = UDim2.new(1, 0, 0, 30)
-    btn.Position = UDim2.new(0, 0, 0, yOffset)
+local grid = Instance.new("UIGridLayout", content)
+grid.CellSize = UDim2.new(0,180,0,50)
+grid.CellPadding = UDim2.new(0,5,0,5)
+
+local function addFeature(name, action)
+    local btn = Instance.new("TextButton", content)
     btn.Text = name
+    btn.Font = Enum.Font.Gotham
+    btn.TextSize = 14
     btn.TextColor3 = Color3.new(1,1,1)
     btn.BackgroundColor3 = Color3.fromRGB(50,50,50)
+    Instance.new("UICorner", btn)
     btn.MouseButton1Click:Connect(action)
-    yOffset = yOffset + 35
 end
 
--- Kapat
-createButton("❌ Kapat", function()
-    gui:Destroy()
-end)
-
--- Küçült
-createButton("➖ Küçült", function()
-    bar.Visible = not bar.Visible
-end)
-
--- ESP
-createButton("👀 ESP Aç", function()
+-- TEMEL ÖZELLİKLER
+addFeature("👀 ESP", function()
     for _, plr in pairs(game.Players:GetPlayers()) do
         if plr ~= player and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
             local box = Instance.new("BoxHandleAdornment", plr.Character.HumanoidRootPart)
@@ -47,20 +74,18 @@ createButton("👀 ESP Aç", function()
             box.AlwaysOnTop = true
             box.ZIndex = 10
             box.Color3 = Color3.fromRGB(255,0,0)
-            box.Transparency = 0.5
+            box.Transparency = 0.3
         end
     end
 end)
 
--- GodMode
-createButton("💀 GodMode Aç", function()
+addFeature("💀 GodMode", function()
     if player.Character:FindFirstChild("Humanoid") then
         player.Character.Humanoid.Name = "GodHumanoid"
     end
 end)
 
--- Fly
-createButton("🚀 Mobil Fly Aç", function()
+addFeature("🚀 Mobil Fly (Tam Destekli)", function()
     local hrp = player.Character:WaitForChild("HumanoidRootPart")
     local bv = Instance.new("BodyVelocity", hrp)
     bv.MaxForce = Vector3.new(1e9,1e9,1e9)
@@ -70,46 +95,72 @@ createButton("🚀 Mobil Fly Aç", function()
     end)
 end)
 
--- Araç renklendir
-createButton("🚗 Araç Renk Random", function()
-    for _, v in pairs(workspace:GetChildren()) do
-        if v:IsA("Model") and v:FindFirstChild("VehicleSeat") then
-            for _, p in pairs(v:GetDescendants()) do
-                if p:IsA("BasePart") then
-                    p.BrickColor = BrickColor.Random()
-                end
-            end
-        end
-    end
-end)
-
--- Hız arttır
-createButton("⚡ Hız 100", function()
+addFeature("⚡ Speed Hack", function()
     if player.Character:FindFirstChildOfClass("Humanoid") then
         player.Character:FindFirstChildOfClass("Humanoid").WalkSpeed = 100
     end
 end)
 
--- Rainbow isim
-spawn(function()
-    while wait(0.5) do
-        if player.Character and player.Character:FindFirstChild("Humanoid") then
-            player.Character.Humanoid.DisplayName = "[🌈 AvonyXkarpuz 🌈]"
+addFeature("🌀 Karakter Renk Döngüsü", function()
+    while true do
+        for _, part in pairs(player.Character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.Color = Color3.fromHSV(tick()%5/5,1,1)
+            end
+        end
+        wait(0.1)
+    end
+end)
+
+addFeature("🌌 Skybox Değiştir", function()
+    local sky = Instance.new("Sky", game.Lighting)
+    sky.SkyboxBk = "http://www.roblox.com/asset/?id=159454299"
+    sky.SkyboxDn = "http://www.roblox.com/asset/?id=159454296"
+    sky.SkyboxFt = "http://www.roblox.com/asset/?id=159454293"
+    sky.SkyboxLf = "http://www.roblox.com/asset/?id=159454286"
+    sky.SkyboxRt = "http://www.roblox.com/asset/?id=159454300"
+    sky.SkyboxUp = "http://www.roblox.com/asset/?id=159454288"
+end)
+
+addFeature("🎵 Açılış Sesi", function()
+    local s = Instance.new("Sound", workspace)
+    s.SoundId = "rbxassetid://594319143"
+    s.Volume = 5
+    s:Play()
+end)
+
+addFeature("🚗 Tüm Araçları Sil", function()
+    for _, v in pairs(workspace:GetChildren()) do
+        if v:IsA("Model") and v:FindFirstChild("VehicleSeat") then
+            v:Destroy()
         end
     end
 end)
 
--- Açılış ekranı ve sesi
-local opening = Instance.new("TextLabel", gui)
-opening.Size = UDim2.new(0, 400, 0, 100)
-opening.Position = UDim2.new(0.5, -200, 0.3, 0)
-opening.Text = "🌟 AvonyXkarpuz Hup Başlatıldı 🌟"
-opening.TextScaled = true
-opening.BackgroundTransparency = 1
+addFeature("⛔ Oyuncuları Dondur", function()
+    for _, plr in pairs(game.Players:GetPlayers()) do
+        if plr ~= player and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+            plr.Character.HumanoidRootPart.Anchored = true
+        end
+    end
+end)
 
-local s = Instance.new("Sound", workspace)
-s.SoundId = "rbxassetid://594319143"
-s.Volume = 5
-s:Play()
-wait(5)
-opening:Destroy()
+addFeature("🎧 Spam Ses", function()
+    for i=1,5 do
+        local s = Instance.new("Sound", workspace)
+        s.SoundId = "rbxassetid://301964312"
+        s.Volume = 10
+        s:Play()
+        wait(0.5)
+    end
+end)
+
+addFeature("🔊 iPhone Bildirim", function()
+    local s = Instance.new("Sound", workspace)
+    s.SoundId = "rbxassetid://12222030"
+    s.Volume = 3
+    s:Play()
+end)
+
+-- Kolayca yeni butonlar eklenebilir...
+
