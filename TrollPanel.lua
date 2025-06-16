@@ -65,7 +65,7 @@ createButton("🌈 Herkesin İsmini Değiştir", function()
 end, posY)
 
 posY = posY + 50
-createButton("🚀 Gelişmiş Fly (Sen)", function()
+createButton("🚀 Gelişmiş Uçma (Sen)", function()
 	local plr = game.Players.LocalPlayer
 	local char = plr.Character or plr.CharacterAdded:Wait()
 	local hrp = char:WaitForChild("HumanoidRootPart")
@@ -107,11 +107,23 @@ createButton("🛫 Tüm Oyunculara Uçma Ver", function()
 end, posY)
 
 posY = posY + 50
-createButton("🎵 Tüm Sunucuya Ses Yay", function()
-	local s = Instance.new("Sound", workspace)
-	s.SoundId = "rbxassetid://142376088"
-	s.Volume = 10
-	s:Play()
+createButton("🎵 Meme + Türkçe Sesler Yay", function()
+	local sesListesi = {
+		"rbxassetid://142376088",
+		"rbxassetid://1847189607",
+		"rbxassetid://9129313469",
+		"rbxassetid://27697743",
+		"rbxassetid://153352699",
+		"rbxassetid://6820372205",
+		"rbxassetid://6132224076",
+	}
+	for _,id in pairs(sesListesi) do
+		local s = Instance.new("Sound", workspace)
+		s.SoundId = id
+		s.Volume = 10
+		s:Play()
+		wait(2)
+	end
 end, posY)
 
 posY = posY + 50
@@ -131,8 +143,8 @@ createButton("🏠 Ev Banını Kaldır", function()
 end, posY)
 
 posY = posY + 50
-createButton("🔗 Discord Linki Kopyala", function()
+createButton("🔗 Discord Linkini Kopyala", function()
 	setclipboard("discord.gg/avonyxkarpuz")
 end, posY)
 
-print("✅ AvonyX IceHup Gelişmiş Panel Yüklendi!")
+print("✅ AvonyXHup Gelişmiş Panel Aktif!")
