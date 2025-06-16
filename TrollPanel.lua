@@ -1,10 +1,28 @@
 local player = game.Players.LocalPlayer
 local mouse = player:GetMouse()
 
--- Panel oluştur
+-- GUI
 local ScreenGui = Instance.new("ScreenGui", player.PlayerGui)
 ScreenGui.Name = "AvonyxHub"
 
+-- LOADING EKRANI
+local loadingFrame = Instance.new("Frame", ScreenGui)
+loadingFrame.Size = UDim2.new(1, 0, 1, 0)
+loadingFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+
+local loadingLabel = Instance.new("TextLabel", loadingFrame)
+loadingLabel.Size = UDim2.new(0, 400, 0, 50)
+loadingLabel.Position = UDim2.new(0.5, -200, 0.5, -25)
+loadingLabel.Text = "AvonyXkarpuzHub Yükleniyor..."
+loadingLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+loadingLabel.BackgroundTransparency = 1
+loadingLabel.TextScaled = true
+
+wait(3) -- 3 saniye loading
+
+loadingFrame:Destroy()
+
+-- Ana panel
 local mainFrame = Instance.new("Frame", ScreenGui)
 mainFrame.Size = UDim2.new(0, 400, 0, 250)
 mainFrame.Position = UDim2.new(0.5, -200, 0.5, -125)
@@ -25,16 +43,15 @@ leftFrame.Size = UDim2.new(0, 100, 1, -35)
 leftFrame.Position = UDim2.new(0, 0, 0, 35)
 leftFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 
--- Sağdaki içerik
+-- Sağ içerik
 local rightFrame = Instance.new("Frame", mainFrame)
 rightFrame.Size = UDim2.new(1, -100, 1, -35)
 rightFrame.Position = UDim2.new(0, 100, 0, 35)
 rightFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 
--- Kutucuklar ve fonksiyonları
+-- Butonlar
 local buttons = {
     {Name = "Fly", Action = function()
-        -- Basit Fly fonksiyonu
         local flying = false
         local bg, bv
 
@@ -84,7 +101,6 @@ local buttons = {
     end}
 }
 
--- Buton oluştur
 for i,btn in ipairs(buttons) do
     local b = Instance.new("TextButton", leftFrame)
     b.Size = UDim2.new(1, 0, 0, 40)
@@ -94,20 +110,6 @@ for i,btn in ipairs(buttons) do
     b.MouseButton1Click:Connect(btn.Action)
 end
 
--- Küçültme işlevi
 minimizeBtn.MouseButton1Click:Connect(function()
     mainFrame.Visible = false
-end)
-
--- Ekrana "Hoşgeldin" yazısı (isteğe bağlı)
-local welcome = Instance.new("TextLabel", ScreenGui)
-welcome.Size = UDim2.new(0, 300, 0, 50)
-welcome.Position = UDim2.new(0.5, -150, 0, 100)
-welcome.Text = "Hoşgeldin Kardeşim - AvonyxHub"
-welcome.TextColor3 = Color3.fromRGB(255, 255, 255)
-welcome.BackgroundTransparency = 1
-welcome.TextScaled = true
-
-delay(5, function()
-    welcome:Destroy()
 end)
