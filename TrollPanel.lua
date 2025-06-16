@@ -1,6 +1,10 @@
 local player = game.Players.LocalPlayer
 
--- Rainbow isim
+-- GUI kur
+local sg = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+sg.Name = "AvonyXkarpuzHupPanel"
+
+-- Rainbow isim ve karakter efekti
 spawn(function()
     local colors = {
         Color3.fromRGB(255,0,0),
@@ -14,126 +18,112 @@ spawn(function()
     while true do
         for _, color in ipairs(colors) do
             pcall(function()
-                player.DisplayName = "<font color=\"rgb("..math.floor(color.R*255)..","..math.floor(color.G*255)..","..math.floor(color.B*255)..")\">AvonyXkarpuzHups</font>"
+                player.DisplayName = "<font color=\"rgb("..
+                    math.floor(color.R*255)..","..
+                    math.floor(color.G*255)..","..
+                    math.floor(color.B*255)..
+                    ")\">AvonyXkarpuzHups</font>"
+                for _, part in pairs(player.Character:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.Color = color
+                    end
+                end
             end)
-            wait(0.3)
+            wait(0.2)
         end
     end
 end)
 
--- Hoşgeldin yazısı + iPhone sesi
-local sg = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-local text = Instance.new("TextLabel", sg)
-text.Size = UDim2.new(1,0,0,100)
-text.Position = UDim2.new(0,0,0.4,0)
-text.Text = "Hoşgeldin Kardeşim"
-text.TextScaled = true
-text.TextColor3 = Color3.new(1,1,1)
-text.BackgroundTransparency = 1
-text.Font = Enum.Font.SourceSansBold
-delay(300, function()
-    text:Destroy()
-end)
+-- Ana çerçeve
+local mainFrame = Instance.new("Frame", sg)
+mainFrame.Size = UDim2.new(0, 450, 0, 600)
+mainFrame.Position = UDim2.new(0.5, -225, 0.5, -300)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30,30,30)
+mainFrame.BorderSizePixel = 3
 
-local notif = Instance.new("Sound", workspace)
-notif.SoundId = "rbxassetid://15666462"
-notif.Volume = 5
-notif:Play()
-game.Debris:AddItem(notif, 5)
+local layout = Instance.new("UIListLayout", mainFrame)
+layout.SortOrder = Enum.SortOrder.LayoutOrder
+layout.Padding = UDim.new(0, 5)
 
--- Panel
-local frame = Instance.new("Frame", sg)
-frame.Size = UDim2.new(0, 350, 0, 450)
-frame.Position = UDim2.new(0.5, -175, 0.5, -225)
-frame.BackgroundColor3 = Color3.fromRGB(30,30,30)
-frame.BorderSizePixel = 2
+-- Kutucuk oluştur
+local function createBox(name, color)
+    local box = Instance.new("Frame", mainFrame)
+    box.Size = UDim2.new(1, -10, 0, 150)
+    box.BackgroundColor3 = color
+    box.BorderSizePixel = 2
 
-local uilist = Instance.new("UIListLayout", frame)
-uilist.Padding = UDim.new(0, 5)
-uilist.FillDirection = Enum.FillDirection.Vertical
-uilist.SortOrder = Enum.SortOrder.LayoutOrder
+    local boxLayout = Instance.new("UIListLayout", box)
+    boxLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    boxLayout.Padding = UDim.new(0, 3)
 
--- Ses butonları
-local sesler = {
-    {"🎭 Joker Kahkaha", "9129313469", Color3.fromRGB(200,0,0)},
-    {"💥 Bass", "142376088", Color3.fromRGB(0,0,200)},
-    {"🤬 Küfür", "1843523601", Color3.fromRGB(200,200,0)},
-    {"🎶 Rasgele Ses", "1843523601", Color3.fromRGB(100,0,100)}
-}
+    local title = Instance.new("TextLabel", box)
+    title.Size = UDim2.new(1,0,0,30)
+    title.Text = name
+    title.TextColor3 = Color3.new(1,1,1)
+    title.BackgroundTransparency = 1
+    title.TextScaled = true
+    title.Font = Enum.Font.GothamBold
 
-for _, s in pairs(sesler) do
-    local btn = Instance.new("TextButton", frame)
-    btn.Size = UDim2.new(1, -10, 0, 40)
-    btn.Text = s[1]
-    btn.TextColor3 = Color3.new(1,1,1)
-    btn.BackgroundColor3 = s[3]
-    btn.Font = Enum.Font.SourceSansBold
-    btn.TextScaled = true
-    btn.MouseButton1Click:Connect(function()
-        local snd = Instance.new("Sound", workspace)
-        snd.SoundId = "rbxassetid://"..s[2]
-        snd.Volume = 10
-        snd:Play()
-        game.Debris:AddItem(snd, 10)
-    end)
+    return box
 end
 
--- Fly
-local flyBtn = Instance.new("TextButton", frame)
-flyBtn.Size = UDim2.new(1,-10,0,40)
-flyBtn.Text = "🕊️ Uçuş Modu"
-flyBtn.TextColor3 = Color3.new(1,1,1)
-flyBtn.BackgroundColor3 = Color3.fromRGB(0,200,200)
-flyBtn.Font = Enum.Font.SourceSansBold
-flyBtn.TextScaled = true
-flyBtn.MouseButton1Click:Connect(function()
+local function createBtn(parent, text, col, callback)
+    local btn = Instance.new("TextButton", parent)
+    btn.Size = UDim2.new(1, -6, 0, 30)
+    btn.Text = text
+    btn.BackgroundColor3 = col
+    btn.TextColor3 = Color3.new(1,1,1)
+    btn.Font = Enum.Font.Gotham
+    btn.TextScaled = true
+    btn.MouseButton1Click:Connect(callback)
+end
+
+-- 🔹 Ana Özellikler Kutusu
+local mainBox = createBox("ANA ÖZELLİKLER", Color3.fromRGB(50,50,50))
+createBtn(mainBox, "🕊️ Uçuş", Color3.fromRGB(0,150,200), function()
     loadstring(game:HttpGet("https://pastebin.com/raw/sKA4N2J2"))()
 end)
-
--- Araç renklendir
-local aracBtn = Instance.new("TextButton", frame)
-aracBtn.Size = UDim2.new(1,-10,0,40)
-aracBtn.Text = "🚗 Araç Renk Rastgele"
-aracBtn.TextColor3 = Color3.new(1,1,1)
-aracBtn.BackgroundColor3 = Color3.fromRGB(0,200,0)
-aracBtn.Font = Enum.Font.SourceSansBold
-aracBtn.TextScaled = true
-aracBtn.MouseButton1Click:Connect(function()
+createBtn(mainBox, "🚗 Araç Renk Değiştir", Color3.fromRGB(0,200,0), function()
     for _, v in pairs(workspace:GetDescendants()) do
-        if v:IsA("VehicleSeat") then
-            if v.Parent:IsA("Model") then
-                for _, part in pairs(v.Parent:GetDescendants()) do
-                    if part:IsA("BasePart") then
-                        part.BrickColor = BrickColor.Random()
-                    end
+        if v:IsA("VehicleSeat") and v.Parent:IsA("Model") then
+            for _, p in pairs(v.Parent:GetDescendants()) do
+                if p:IsA("BasePart") then
+                    p.BrickColor = BrickColor.Random()
                 end
             end
         end
     end
 end)
 
--- Trolling - jScare
-local trollBtn = Instance.new("TextButton", frame)
-trollBtn.Size = UDim2.new(1,-10,0,40)
-trollBtn.Text = "👻 jScare"
-trollBtn.TextColor3 = Color3.new(1,1,1)
-trollBtn.BackgroundColor3 = Color3.fromRGB(200,0,200)
-trollBtn.Font = Enum.Font.SourceSansBold
-trollBtn.TextScaled = true
-trollBtn.MouseButton1Click:Connect(function()
+-- 🤡 Troll Kutusu
+local trollBox = createBox("TROLL ÖZELLİKLERİ", Color3.fromRGB(100,0,100))
+createBtn(trollBox, "👻 jScare", Color3.fromRGB(150,0,150), function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/Syntaxx64/jscare/main/main.lua"))()
 end)
+createBtn(trollBox, "🎵 Bas Efekti", Color3.fromRGB(200,10,10), function()
+    local snd = Instance.new("Sound", workspace)
+    snd.SoundId = "rbxassetid://142376088"
+    snd.Volume = 10
+    snd:Play()
+    game.Debris:AddItem(snd, 5)
+end)
+createBtn(trollBox, "🤬 Küfür Sesi", Color3.fromRGB(200,50,0), function()
+    local snd = Instance.new("Sound", workspace)
+    snd.SoundId = "rbxassetid://1843523601"
+    snd.Volume = 10
+    snd:Play()
+    game.Debris:AddItem(snd, 5)
+end)
 
--- Karakter kopyala
-local copyBtn = Instance.new("TextButton", frame)
-copyBtn.Size = UDim2.new(1,-10,0,40)
-copyBtn.Text = "🧍 Karakter Kopyala"
-copyBtn.TextColor3 = Color3.new(1,1,1)
-copyBtn.BackgroundColor3 = Color3.fromRGB(100,100,100)
-copyBtn.Font = Enum.Font.SourceSansBold
-copyBtn.TextScaled = true
-copyBtn.MouseButton1Click:Connect(function()
+-- 🧍 Karakter Kutusu
+local charBox = createBox("KARAKTER", Color3.fromRGB(70,70,70))
+createBtn(charBox, "🧍 Karakter Kopyala", Color3.fromRGB(100,100,100), function()
     local clone = player.Character:Clone()
     clone.Parent = workspace
-    clone:SetPrimaryPartCFrame(player.Character.PrimaryPart.CFrame * CFrame.new(2,0,0))
+    clone:SetPrimaryPartCFrame(player.Character.PrimaryPart.CFrame * CFrame.new(3,0,0))
+end)
+
+-- ❌ Paneli Kapat
+createBtn(mainFrame, "❌ Paneli Kapat", Color3.fromRGB(120,0,0), function()
+    sg:Destroy()
 end)
