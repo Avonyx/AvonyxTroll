@@ -1,119 +1,90 @@
--- AvonyXkarpuzHup Brookhaven Panel
-
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
-
--- PANEL
+-- AvonyXkarpuzHup Modern Panel
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "AvonyXkarpuzHup"
-ScreenGui.Parent = game.CoreGui
-ScreenGui.ResetOnSpawn = false
-
-local Frame = Instance.new("Frame")
-Frame.Size = UDim2.new(0, 500, 0, 300)
-Frame.Position = UDim2.new(0.25, 0, 0.25, 0)
-Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-Frame.BorderSizePixel = 0
-Frame.BackgroundTransparency = 0.2
-Frame.Parent = ScreenGui
-
--- DRAG
-local dragging
-local dragInput
-local dragStart
-local startPos
-
-local function update(input)
-	local delta = input.Position - dragStart
-	Frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
-							   startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-end
-
-Frame.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 then
-		dragging = true
-		dragStart = input.Position
-		startPos = Frame.Position
-
-		input.Changed:Connect(function()
-			if input.UserInputState == Enum.UserInputState.End then
-				dragging = false
-			end
-		end)
-	end
-end)
-
-Frame.InputChanged:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseMovement then
-		dragInput = input
-	end
-end)
-
-game:GetService("UserInputService").InputChanged:Connect(function(input)
-	if input == dragInput and dragging then
-		update(input)
-	end
-end)
-
--- KÜÇÜLTME & KAPATMA
+local MainFrame = Instance.new("Frame")
 local CloseButton = Instance.new("TextButton")
+local MinimizeButton = Instance.new("TextButton")
+
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.Name = "AvonyXkarpuzHup"
+
+MainFrame.Size = UDim2.new(0, 400, 0, 300)
+MainFrame.Position = UDim2.new(0.3, 0, 0.3, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+MainFrame.Draggable = true
+MainFrame.Active = true
+MainFrame.Parent = ScreenGui
+
+-- Close Button
+CloseButton.Size = UDim2.new(0, 50, 0, 25)
+CloseButton.Position = UDim2.new(1, -55, 0, 5)
 CloseButton.Text = "X"
-CloseButton.Size = UDim2.new(0, 30, 0, 30)
-CloseButton.Position = UDim2.new(1, -35, 0, 5)
-CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-CloseButton.TextColor3 = Color3.new(1,1,1)
-CloseButton.Parent = Frame
-
+CloseButton.Parent = MainFrame
 CloseButton.MouseButton1Click:Connect(function()
-	ScreenGui:Destroy()
+    ScreenGui:Destroy()
 end)
 
-local MinButton = Instance.new("TextButton")
-MinButton.Text = "-"
-MinButton.Size = UDim2.new(0, 30, 0, 30)
-MinButton.Position = UDim2.new(1, -70, 0, 5)
-MinButton.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
-MinButton.TextColor3 = Color3.new(0,0,0)
-MinButton.Parent = Frame
-
-local minimized = false
-MinButton.MouseButton1Click:Connect(function()
-	minimized = not minimized
-	for _, v in pairs(Frame:GetChildren()) do
-		if v:IsA("TextButton") and v ~= MinButton and v ~= CloseButton then
-			v.Visible = not minimized
-		end
-	end
+-- Minimize Button
+MinimizeButton.Size = UDim2.new(0, 50, 0, 25)
+MinimizeButton.Position = UDim2.new(1, -110, 0, 5)
+MinimizeButton.Text = "-"
+MinimizeButton.Parent = MainFrame
+MinimizeButton.MouseButton1Click:Connect(function()
+    MainFrame.Visible = not MainFrame.Visible
 end)
 
--- ÖRNEK BİR TROLL BUTONU
-local TrollButton = Instance.new("TextButton")
-TrollButton.Text = "Troll Ses"
-TrollButton.Size = UDim2.new(0, 100, 0, 40)
-TrollButton.Position = UDim2.new(0, 10, 0, 50)
-TrollButton.BackgroundColor3 = Color3.fromRGB(50, 50, 255)
-TrollButton.TextColor3 = Color3.new(1,1,1)
-TrollButton.Parent = Frame
-
-TrollButton.MouseButton1Click:Connect(function()
-	local sound = Instance.new("Sound", player.Character:FindFirstChild("Head") or player.Character:FindFirstChildWhichIsA("BasePart"))
-	sound.SoundId = "rbxassetid://183763512" -- Örnek bir ses ID'si (Joker kahkaha)
-	sound:Play()
-end)
+-- Hoşgeldin mesaj + ses
+game.StarterGui:SetCore("ChatMakeSystemMessage", {
+    Text = "[AvonyXkarpuzHup] Hoşgeldin kardeşim!";
+    Color = Color3.fromRGB(255, 255, 0);
+})
+local sound = Instance.new("Sound", game.Players.LocalPlayer:WaitForChild("PlayerGui"))
+sound.SoundId = "rbxassetid://9118828563" -- iphone bildirim sesi
+sound:Play()
 
 -- Rainbow isim
-coroutine.wrap(function()
-	while true do
-		for i = 0, 1, 0.01 do
-			player.Character.Humanoid.DisplayName = "[AvonyXkarpuzHup]"
-			wait(0.1)
-		end
-	end
-end)()
+spawn(function()
+    local plr = game.Players.LocalPlayer
+    while wait(0.5) do
+        local color = Color3.fromHSV(tick()%5/5, 1, 1)
+        pcall(function()
+            plr.Character.Head.BillboardGui.TextLabel.TextColor3 = color
+        end)
+    end
+end)
 
--- Açılış sesi
-local opensound = Instance.new("Sound", player:WaitForChild("PlayerGui"))
-opensound.SoundId = "rbxassetid://9118828560" -- iPhone bildirim sesi
-opensound.Volume = 3
-opensound:Play()
+-- Sol kutucuklar (örnek Fly / Troll / Araç)
+local function createButton(name, posY, callback)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0, 120, 0, 30)
+    btn.Position = UDim2.new(0, 10, 0, posY)
+    btn.Text = name
+    btn.Parent = MainFrame
+    btn.MouseButton1Click:Connect(callback)
+end
+
+-- Mobil Fly
+createButton("Mobil Fly", 40, function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+end)
+
+-- Troll Ses 1
+createButton("Joker Kahkaha", 80, function()
+    local s = Instance.new("Sound", game.Workspace)
+    s.SoundId = "rbxassetid://7149254326"
+    s.Volume = 10
+    s:Play()
+end)
+
+-- Araç renk
+createButton("Araç Renk Değiştir", 120, function()
+    for _, v in pairs(game:GetService("Workspace").Vehicles:GetChildren()) do
+        for _, p in pairs(v:GetDescendants()) do
+            if p:IsA("BasePart") then
+                p.BrickColor = BrickColor.Random()
+            end
+        end
+    end
+end)
+
+-- Daha fazla troll ses örneği eklenebilir
 
