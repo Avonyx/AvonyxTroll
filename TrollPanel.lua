@@ -1,103 +1,113 @@
-local plr = game.Players.LocalPlayer
+local player = game.Players.LocalPlayer
+local mouse = player:GetMouse()
 
--- RP ismi rainbow olarak ayarlanıyor
-spawn(function()
-    local colors = {Color3.new(1,0,0),Color3.new(1,0.5,0),Color3.new(1,1,0),Color3.new(0,1,0),Color3.new(0,0,1),Color3.new(0.29,0,0.51),Color3.new(0.56,0,1)}
-    local i = 1
-    while true do
-        pcall(function()
-            plr.DisplayName = "AvonyXkarpuzHup"
-            plr.Character.Head.BrickColor = BrickColor.new(colors[i])
-        end)
-        i = i % #colors + 1
-        wait(0.2)
-    end
-end)
+-- Panel oluştur
+local ScreenGui = Instance.new("ScreenGui", player.PlayerGui)
+ScreenGui.Name = "AvonyxHub"
 
--- Panel GUI
-local gui = Instance.new("ScreenGui", plr.PlayerGui)
-gui.Name = "AvonyXkarpuzHup"
+local mainFrame = Instance.new("Frame", ScreenGui)
+mainFrame.Size = UDim2.new(0, 400, 0, 250)
+mainFrame.Position = UDim2.new(0.5, -200, 0.5, -125)
+mainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+mainFrame.Active = true
+mainFrame.Draggable = true
 
-local main = Instance.new("Frame", gui)
-main.Size = UDim2.new(0, 700, 0, 400)
-main.Position = UDim2.new(0.5, -350, 0.5, -200)
-main.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-main.BorderSizePixel = 0
+-- Küçült butonu
+local minimizeBtn = Instance.new("TextButton", mainFrame)
+minimizeBtn.Size = UDim2.new(0, 50, 0, 25)
+minimizeBtn.Position = UDim2.new(1, -55, 0, 5)
+minimizeBtn.Text = "-"
+minimizeBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
 
-local side = Instance.new("Frame", main)
-side.Size = UDim2.new(0, 150, 1, 0)
-side.Position = UDim2.new(0, 0, 0, 0)
-side.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+-- Soldaki kutucuklar
+local leftFrame = Instance.new("Frame", mainFrame)
+leftFrame.Size = UDim2.new(0, 100, 1, -35)
+leftFrame.Position = UDim2.new(0, 0, 0, 35)
+leftFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 
-local content = Instance.new("ScrollingFrame", main)
-content.Size = UDim2.new(1, -150, 1, 0)
-content.Position = UDim2.new(0, 150, 0, 0)
-content.CanvasSize = UDim2.new(0,0,0,600)
-content.ScrollBarThickness = 8
-content.BackgroundTransparency = 1
+-- Sağdaki içerik
+local rightFrame = Instance.new("Frame", mainFrame)
+rightFrame.Size = UDim2.new(1, -100, 1, -35)
+rightFrame.Position = UDim2.new(0, 100, 0, 35)
+rightFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 
-local function addSideButton(text, click)
-    local b = Instance.new("TextButton", side)
-    b.Size = UDim2.new(1, 0, 0, 40)
-    b.Text = text
-    b.TextColor3 = Color3.new(1,1,1)
-    b.BackgroundColor3 = Color3.fromRGB(70,70,70)
-    b.BorderSizePixel = 0
-    b.MouseButton1Click:Connect(click)
-end
+-- Kutucuklar ve fonksiyonları
+local buttons = {
+    {Name = "Fly", Action = function()
+        -- Basit Fly fonksiyonu
+        local flying = false
+        local bg, bv
 
-local function addButton(text, y, click)
-    local b = Instance.new("TextButton", content)
-    b.Size = UDim2.new(1, -10, 0, 40)
-    b.Position = UDim2.new(0, 5, 0, y)
-    b.Text = text
-    b.TextColor3 = Color3.new(1,1,1)
-    b.BackgroundColor3 = Color3.fromRGB(math.random(100,200),math.random(100,200),math.random(100,200))
-    b.BorderSizePixel = 0
-    b.MouseButton1Click:Connect(click)
-end
+        local function startFly()
+            flying = true
+            local hrp = player.Character:WaitForChild("HumanoidRootPart")
+            bg = Instance.new("BodyGyro", hrp)
+            bg.P = 9e4
+            bg.MaxTorque = Vector3.new(9e9,9e9,9e9)
+            bg.CFrame = hrp.CFrame
 
--- Kategoriler
-addSideButton("🚀 Oyuncu", function()
-    content:ClearAllChildren()
-    addButton("Fly", 0, function()
-        loadstring(game:HttpGet("https://pastebin.com/raw/yL8iP7C4"))() -- Basit çalışan Fly
-    end)
-    addButton("Noclip", 50, function()
-        loadstring(game:HttpGet("https://pastebin.com/raw/7P4hQvGj"))()
-    end)
-end)
+            bv = Instance.new("BodyVelocity", hrp)
+            bv.Velocity = Vector3.new(0,0,0)
+            bv.MaxForce = Vector3.new(9e9,9e9,9e9)
 
-addSideButton("🚗 Araç", function()
-    content:ClearAllChildren()
-    addButton("Araç Renk Değiştir", 0, function()
-        for _, v in pairs(workspace:GetDescendants()) do
-            if v:IsA("VehicleSeat") and v.Occupant == plr.Character:FindFirstChildWhichIsA("Humanoid") then
-                for _, p in pairs(v.Parent:GetDescendants()) do
-                    if p:IsA("BasePart") then
-                        p.BrickColor = BrickColor.Random()
+            game:GetService("RunService").Heartbeat:Connect(function()
+                if flying then
+                    bg.CFrame = CFrame.new(hrp.Position, hrp.Position + mouse.Hit.lookVector)
+                    bv.Velocity = mouse.Hit.lookVector * 50
+                end
+            end)
+        end
+
+        local function stopFly()
+            flying = false
+            if bg then bg:Destroy() end
+            if bv then bv:Destroy() end
+        end
+
+        if not flying then
+            startFly()
+        else
+            stopFly()
+        end
+    end},
+    {Name = "Rainbow", Action = function()
+        while wait(0.1) do
+            local char = player.Character
+            if char then
+                for _,v in pairs(char:GetDescendants()) do
+                    if v:IsA("BasePart") then
+                        v.BrickColor = BrickColor.Random()
                     end
                 end
             end
         end
-    end)
+    end}
+}
+
+-- Buton oluştur
+for i,btn in ipairs(buttons) do
+    local b = Instance.new("TextButton", leftFrame)
+    b.Size = UDim2.new(1, 0, 0, 40)
+    b.Position = UDim2.new(0, 0, 0, (i-1)*45)
+    b.Text = btn.Name
+    b.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+    b.MouseButton1Click:Connect(btn.Action)
+end
+
+-- Küçültme işlevi
+minimizeBtn.MouseButton1Click:Connect(function()
+    mainFrame.Visible = false
 end)
 
-addSideButton("🤣 Troll", function()
-    content:ClearAllChildren()
-    addButton("Joker Kahkaha (Tüm Server)", 0, function()
-        local s = Instance.new("Sound", workspace)
-        s.SoundId = "rbxassetid://5041354913"
-        s.Volume = 10
-        s:Play()
-    end)
-    addButton("Bass Ses (Tüm Server)", 50, function()
-        local s = Instance.new("Sound", workspace)
-        s.SoundId = "rbxassetid://142376088"
-        s.Volume = 10
-        s:Play()
-    end)
-end)
+-- Ekrana "Hoşgeldin" yazısı (isteğe bağlı)
+local welcome = Instance.new("TextLabel", ScreenGui)
+welcome.Size = UDim2.new(0, 300, 0, 50)
+welcome.Position = UDim2.new(0.5, -150, 0, 100)
+welcome.Text = "Hoşgeldin Kardeşim - AvonyxHub"
+welcome.TextColor3 = Color3.fromRGB(255, 255, 255)
+welcome.BackgroundTransparency = 1
+welcome.TextScaled = true
 
--- Başlangıç: Oyuncu sekmesi seçili
-side:FindFirstChildOfClass("TextButton").MouseButton1Click:Fire()
+delay(5, function()
+    welcome:Destroy()
+end)
