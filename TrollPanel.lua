@@ -1,4 +1,4 @@
--- AvonyXkarpuzHup | Yenilikçi Modern Brookhaven GUI
+-- AvonyXkarpuzHup | Modern Brookhaven GUI
 
 local ScreenGui = Instance.new("ScreenGui")
 local MainFrame = Instance.new("Frame")
@@ -78,6 +78,7 @@ createTab("Fly")
 createTab("Araç")
 createTab("Görünüm")
 
+-- Rainbow isim
 spawn(function()
     while wait(0.5) do
         local player = game.Players.LocalPlayer
@@ -90,8 +91,9 @@ spawn(function()
     end
 end)
 
+-- Açılış sesi (örnek iphone bildirim sesi)
 local sound = Instance.new("Sound")
-sound.SoundId = "rbxassetid://9118828566"
+sound.SoundId = "rbxassetid://9118828566" -- iPhone bildirim sesi
 sound.Volume = 5
 sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 sound:Play()
