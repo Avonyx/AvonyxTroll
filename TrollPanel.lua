@@ -1,114 +1,119 @@
--- AvonyXkarpuzHup Modern Panel
+-- AvonyXkarpuzHup Brookhaven Panel
 
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- PANEL
 local ScreenGui = Instance.new("ScreenGui")
-local MainFrame = Instance.new("Frame")
-local LeftMenu = Instance.new("Frame")
-local RightPanel = Instance.new("Frame")
-local Title = Instance.new("TextLabel")
-
-local TrollButton = Instance.new("TextButton")
-local FlyButton = Instance.new("TextButton")
-local RainbowButton = Instance.new("TextButton")
-local SoundButton = Instance.new("TextButton")
-
-ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 ScreenGui.Name = "AvonyXkarpuzHup"
+ScreenGui.Parent = game.CoreGui
+ScreenGui.ResetOnSpawn = false
 
--- Main Frame
-MainFrame.Parent = ScreenGui
-MainFrame.Size = UDim2.new(0, 500, 0, 300)
-MainFrame.Position = UDim2.new(0.25, 0, 0.25, 0)
-MainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-MainFrame.Active = true
-MainFrame.Draggable = true
+local Frame = Instance.new("Frame")
+Frame.Size = UDim2.new(0, 500, 0, 300)
+Frame.Position = UDim2.new(0.25, 0, 0.25, 0)
+Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BorderSizePixel = 0
+Frame.BackgroundTransparency = 0.2
+Frame.Parent = ScreenGui
 
--- Title
-Title.Parent = MainFrame
-Title.Size = UDim2.new(1, 0, 0, 30)
-Title.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-Title.Text = "AvonyXkarpuzHup"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.Font = Enum.Font.SourceSansBold
-Title.TextSize = 20
+-- DRAG
+local dragging
+local dragInput
+local dragStart
+local startPos
 
--- Left Menu
-LeftMenu.Parent = MainFrame
-LeftMenu.Size = UDim2.new(0, 120, 1, -30)
-LeftMenu.Position = UDim2.new(0, 0, 0, 30)
-LeftMenu.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-
--- Right Panel
-RightPanel.Parent = MainFrame
-RightPanel.Size = UDim2.new(1, -120, 1, -30)
-RightPanel.Position = UDim2.new(0, 120, 0, 30)
-RightPanel.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-
--- Left Buttons
-local function createMenuButton(name, yPos)
-    local btn = Instance.new("TextButton")
-    btn.Parent = LeftMenu
-    btn.Size = UDim2.new(1, -10, 0, 40)
-    btn.Position = UDim2.new(0, 5, 0, yPos)
-    btn.Text = name
-    btn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    return btn
+local function update(input)
+	local delta = input.Position - dragStart
+	Frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+							   startPos.Y.Scale, startPos.Y.Offset + delta.Y)
 end
 
-local trollBtn = createMenuButton("Troll", 10)
-local flyBtn = createMenuButton("Fly", 60)
-local rainbowBtn = createMenuButton("Rainbow", 110)
+Frame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = true
+		dragStart = input.Position
+		startPos = Frame.Position
 
--- Add functionality
-trollBtn.MouseButton1Click:Connect(function()
-    for _, v in pairs(RightPanel:GetChildren()) do if v:IsA("TextButton") then v:Destroy() end end
-
-    local soundBtn = Instance.new("TextButton")
-    soundBtn.Parent = RightPanel
-    soundBtn.Size = UDim2.new(0, 200, 0, 40)
-    soundBtn.Position = UDim2.new(0, 20, 0, 20)
-    soundBtn.Text = "Play Joker Laugh"
-    soundBtn.MouseButton1Click:Connect(function()
-        local s = Instance.new("Sound", game.Workspace)
-        s.SoundId = "rbxassetid://138186576"
-        s.Volume = 10
-        s:Play()
-    end)
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then
+				dragging = false
+			end
+		end)
+	end
 end)
 
-flyBtn.MouseButton1Click:Connect(function()
-    for _, v in pairs(RightPanel:GetChildren()) do if v:IsA("TextButton") then v:Destroy() end end
-
-    local flyStart = Instance.new("TextButton")
-    flyStart.Parent = RightPanel
-    flyStart.Size = UDim2.new(0, 200, 0, 40)
-    flyStart.Position = UDim2.new(0, 20, 0, 20)
-    flyStart.Text = "Enable Fly"
-    flyStart.MouseButton1Click:Connect(function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/RobloxHackerYT/FlyScript/main/Fly.lua"))()
-    end)
+Frame.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement then
+		dragInput = input
+	end
 end)
 
-rainbowBtn.MouseButton1Click:Connect(function()
-    for _, v in pairs(RightPanel:GetChildren()) do if v:IsA("TextButton") then v:Destroy() end end
-
-    local rainbowStart = Instance.new("TextButton")
-    rainbowStart.Parent = RightPanel
-    rainbowStart.Size = UDim2.new(0, 200, 0, 40)
-    rainbowStart.Position = UDim2.new(0, 20, 0, 20)
-    rainbowStart.Text = "Activate Rainbow Name"
-    rainbowStart.MouseButton1Click:Connect(function()
-        local player = game.Players.LocalPlayer
-        while true do
-            player.Character.Humanoid.DisplayName = "AvonyXkarpuzHup"
-            player.Character.Humanoid.DisplayName = string.format("<font color='#%02X%02X%02X'>%s</font>", math.random(255), math.random(255), math.random(255), "AvonyXkarpuzHup")
-            wait(0.1)
-        end
-    end)
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+	if input == dragInput and dragging then
+		update(input)
+	end
 end)
 
--- Açılış müziği
-local startSound = Instance.new("Sound", game.Workspace)
-startSound.SoundId = "rbxassetid://9118823103"
-startSound.Volume = 10
-startSound:Play()
+-- KÜÇÜLTME & KAPATMA
+local CloseButton = Instance.new("TextButton")
+CloseButton.Text = "X"
+CloseButton.Size = UDim2.new(0, 30, 0, 30)
+CloseButton.Position = UDim2.new(1, -35, 0, 5)
+CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+CloseButton.TextColor3 = Color3.new(1,1,1)
+CloseButton.Parent = Frame
+
+CloseButton.MouseButton1Click:Connect(function()
+	ScreenGui:Destroy()
+end)
+
+local MinButton = Instance.new("TextButton")
+MinButton.Text = "-"
+MinButton.Size = UDim2.new(0, 30, 0, 30)
+MinButton.Position = UDim2.new(1, -70, 0, 5)
+MinButton.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
+MinButton.TextColor3 = Color3.new(0,0,0)
+MinButton.Parent = Frame
+
+local minimized = false
+MinButton.MouseButton1Click:Connect(function()
+	minimized = not minimized
+	for _, v in pairs(Frame:GetChildren()) do
+		if v:IsA("TextButton") and v ~= MinButton and v ~= CloseButton then
+			v.Visible = not minimized
+		end
+	end
+end)
+
+-- ÖRNEK BİR TROLL BUTONU
+local TrollButton = Instance.new("TextButton")
+TrollButton.Text = "Troll Ses"
+TrollButton.Size = UDim2.new(0, 100, 0, 40)
+TrollButton.Position = UDim2.new(0, 10, 0, 50)
+TrollButton.BackgroundColor3 = Color3.fromRGB(50, 50, 255)
+TrollButton.TextColor3 = Color3.new(1,1,1)
+TrollButton.Parent = Frame
+
+TrollButton.MouseButton1Click:Connect(function()
+	local sound = Instance.new("Sound", player.Character:FindFirstChild("Head") or player.Character:FindFirstChildWhichIsA("BasePart"))
+	sound.SoundId = "rbxassetid://183763512" -- Örnek bir ses ID'si (Joker kahkaha)
+	sound:Play()
+end)
+
+-- Rainbow isim
+coroutine.wrap(function()
+	while true do
+		for i = 0, 1, 0.01 do
+			player.Character.Humanoid.DisplayName = "[AvonyXkarpuzHup]"
+			wait(0.1)
+		end
+	end
+end)()
+
+-- Açılış sesi
+local opensound = Instance.new("Sound", player:WaitForChild("PlayerGui"))
+opensound.SoundId = "rbxassetid://9118828560" -- iPhone bildirim sesi
+opensound.Volume = 3
+opensound:Play()
+
