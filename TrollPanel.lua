@@ -1,104 +1,103 @@
--- AvonyXkarpuzHup | Full Brookhaven Hile Paneli
+-- AvonyXkarpuzHup | Modern Brookhaven GUI
+-- GUI başlangıç kodu
+
 local ScreenGui = Instance.new("ScreenGui")
-local Frame = Instance.new("ScrollingFrame")
-local UICorner = Instance.new("UICorner")
-local UIListLayout = Instance.new("UIListLayout")
+local MainFrame = Instance.new("Frame")
+local TabsFrame = Instance.new("Frame")
+local ContentFrame = Instance.new("Frame")
+local CloseButton = Instance.new("TextButton")
+local MinimizeButton = Instance.new("TextButton")
 
 ScreenGui.Name = "AvonyXkarpuzHup"
-ScreenGui.Parent = game.CoreGui
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
-Frame.Name = "MainFrame"
-Frame.Parent = ScreenGui
-Frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-Frame.Position = UDim2.new(0.25, 0, 0.2, 0)
-Frame.Size = UDim2.new(0, 500, 0, 400)
-Frame.ScrollBarThickness = 10
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+MainFrame.BorderSizePixel = 0
+MainFrame.Position = UDim2.new(0.2, 0, 0.2, 0)
+MainFrame.Size = UDim2.new(0, 500, 0, 300)
+MainFrame.Active = true
+MainFrame.Draggable = true
 
-UICorner.Parent = Frame
-UIListLayout.Parent = Frame
-UIListLayout.Padding = UDim.new(0, 5)
-UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+TabsFrame.Name = "TabsFrame"
+TabsFrame.Parent = MainFrame
+TabsFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+TabsFrame.BorderSizePixel = 0
+TabsFrame.Size = UDim2.new(0, 100, 1, 0)
 
-local function addButton(name, text, func)
-    local button = Instance.new("TextButton")
-    button.Name = name
-    button.Parent = Frame
-    button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    button.Size = UDim2.new(1, -10, 0, 50)
-    button.Text = text
-    button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    button.TextScaled = true
-    button.Font = Enum.Font.SourceSansBold
-    local corner = Instance.new("UICorner", button)
-    button.MouseButton1Click:Connect(func)
-end
+ContentFrame.Name = "ContentFrame"
+ContentFrame.Parent = MainFrame
+ContentFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+ContentFrame.BorderSizePixel = 0
+ContentFrame.Position = UDim2.new(0, 100, 0, 0)
+ContentFrame.Size = UDim2.new(1, -100, 1, 0)
 
--- 🎵 Açılış sesi + Hoşgeldin yazısı
-local açılışSes = Instance.new("Sound", game.Workspace)
-açılışSes.SoundId = "rbxassetid://911882856" -- iphone bildirim sesi
-açılışSes.Volume = 5
-açılışSes:Play()
-
-local welcome = Instance.new("BillboardGui", game.Players.LocalPlayer.Character.Head)
-welcome.Size = UDim2.new(0,200,0,50)
-welcome.StudsOffset = Vector3.new(0,3,0)
-local wText = Instance.new("TextLabel", welcome)
-wText.Size = UDim2.new(1,0,1,0)
-wText.BackgroundTransparency = 1
-wText.Text = "Hoşgeldin Kardeşim!"
-wText.TextColor3 = Color3.fromRGB(255,255,255)
-wText.TextScaled = true
-wText.Font = Enum.Font.SourceSansBold
-game.Players.LocalPlayer.Character.Humanoid.DisplayName = "🌈AvonyXkarpuzHup🌈"
-wait(5)
-welcome:Destroy()
-
--- 🚀 ÖZELLİKLER
-
-addButton("Fly", "🕊️ Mobil Fly", function()
-    local p = game.Players.LocalPlayer
-    local c = p.Character or p.CharacterAdded:Wait()
-    local hrp = c:WaitForChild("HumanoidRootPart")
-    local bv = Instance.new("BodyVelocity", hrp)
-    bv.MaxForce = Vector3.new(1e5, 1e5, 1e5)
-    bv.Velocity = Vector3.new(0, 50, 0)
-    wait(5)
-    bv:Destroy()
-end)
-
-addButton("Rainbow", "🌈 Rainbow Karakter + İsim", function()
-    local p = game.Players.LocalPlayer
-    while true do
-        for i = 0, 1, 0.01 do
-            p.Character.Humanoid.DisplayName = "🌈AvonyXkarpuzHup🌈"
-            p.Character.HumanoidRootPart.BrickColor = BrickColor.new(Color3.fromHSV(i,1,1))
-            wait(0.05)
-        end
-    end
-end)
-
-addButton("TrollSound1", "🎭 Joker Kahkaha (Tüm server duyar)", function()
-    local s = Instance.new("Sound", game.Workspace)
-    s.SoundId = "rbxassetid://1837635154"
-    s.Volume = 10
-    s:Play()
-end)
-
-addButton("TrollSound2", "🔊 Bass Boost (Tüm server duyar)", function()
-    local s = Instance.new("Sound", game.Workspace)
-    s.SoundId = "rbxassetid://142376088"
-    s.Volume = 10
-    s:Play()
-end)
-
-addButton("VehicleColor", "🚗 Araç Renk Değiştir", function()
-    for _,v in pairs(workspace.Vehicles:GetChildren()) do
-        if v:FindFirstChild("Body") then
-            v.Body.BrickColor = BrickColor.Random()
-        end
-    end
-end)
-
-addButton("Close", "❌ Paneli Kapat", function()
+CloseButton.Name = "CloseButton"
+CloseButton.Parent = MainFrame
+CloseButton.Text = "X"
+CloseButton.Size = UDim2.new(0, 30, 0, 30)
+CloseButton.Position = UDim2.new(1, -30, 0, 0)
+CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+CloseButton.MouseButton1Click:Connect(function()
     ScreenGui:Destroy()
 end)
+
+MinimizeButton.Name = "MinimizeButton"
+MinimizeButton.Parent = MainFrame
+MinimizeButton.Text = "-"
+MinimizeButton.Size = UDim2.new(0, 30, 0, 30)
+MinimizeButton.Position = UDim2.new(1, -60, 0, 0)
+MinimizeButton.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
+MinimizeButton.MouseButton1Click:Connect(function()
+    if ContentFrame.Visible then
+        ContentFrame.Visible = false
+        TabsFrame.Visible = false
+    else
+        ContentFrame.Visible = true
+        TabsFrame.Visible = true
+    end
+end)
+
+-- Örnek tab ve butonlar
+local function createTab(name, callback)
+    local button = Instance.new("TextButton")
+    button.Text = name
+    button.Parent = TabsFrame
+    button.Size = UDim2.new(1, 0, 0, 50)
+    button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    button.MouseButton1Click:Connect(callback)
+end
+
+createTab("Troll", function()
+    print("Troll özellikleri seçildi")
+end)
+
+createTab("Fly", function()
+    print("Fly özellikleri seçildi")
+end)
+
+createTab("Araç", function()
+    print("Araç özellikleri seçildi")
+end)
+
+createTab("Görünüm", function()
+    print("Görünüm özellikleri seçildi")
+end)
+
+-- Karakter RP ismi rainbow yap
+spawn(function()
+    while wait(0.5) do
+        local player = game.Players.LocalPlayer
+        if player and player.Character then
+            player.Character:FindFirstChildOfClass("Humanoid").DisplayName = "<font color=\"rgb("..math.random(0,255)..","..math.random(0,255)..","..math.random(0,255)..")\">AvonyXkarpuzHup</font>"
+        end
+    end
+end)
+
+-- Açılış sesi
+local sound = Instance.new("Sound")
+sound.SoundId = "rbxassetid://9118828566" -- iPhone bildirim sesi örnek
+sound.Volume = 5
+sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+sound:Play()
