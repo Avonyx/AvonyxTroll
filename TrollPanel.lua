@@ -43,3 +43,16 @@ btnSound.MouseButton1Click:Connect(function()
     s.Volume = 10
     s:Play()
 end)
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.Name = "AvonyxTrollPanel"
+
+Frame.Size = UDim2.new(0, 300, 0, 200)
+Frame.Position = UDim2.new(0.5, -150, 0.5, -100)
+Frame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+Frame.Parent = ScreenGui
+
+print("Avonyx Troll Panel açıldı!")
+
