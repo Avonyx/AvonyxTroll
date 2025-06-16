@@ -1,113 +1,104 @@
--- AvonyXkarpuz Modern Brookhaven Hilesi
+-- AvonyXkarpuzHup | Full Brookhaven Hile Paneli
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("ScrollingFrame")
+local UICorner = Instance.new("UICorner")
+local UIListLayout = Instance.new("UIListLayout")
 
-local player = game.Players.LocalPlayer
-local char = player.Character or player.CharacterAdded:Wait()
+ScreenGui.Name = "AvonyXkarpuzHup"
+ScreenGui.Parent = game.CoreGui
 
--- GUI Başlat
-local gui = Instance.new("ScreenGui", player.PlayerGui)
-gui.Name = "AvonyXModernHub"
+Frame.Name = "MainFrame"
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+Frame.Position = UDim2.new(0.25, 0, 0.2, 0)
+Frame.Size = UDim2.new(0, 500, 0, 400)
+Frame.ScrollBarThickness = 10
 
-local main = Instance.new("Frame", gui)
-main.Size = UDim2.new(0, 550, 0, 400)
-main.Position = UDim2.new(0.5, -275, 0.5, -200)
-main.BackgroundColor3 = Color3.fromRGB(30,30,30)
-main.Active = true
-main.Draggable = true
-main.BorderSizePixel = 0
-main.ClipsDescendants = true
+UICorner.Parent = Frame
+UIListLayout.Parent = Frame
+UIListLayout.Padding = UDim.new(0, 5)
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
--- Başlık
-local title = Instance.new("TextLabel", main)
-title.Size = UDim2.new(1, 0, 0, 40)
-title.Text = "🌈 AvonyXkarpuz Brookhaven Hub 🌈"
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-title.TextScaled = true
-
--- Açılış Müziği
-local sound = Instance.new("Sound", player:WaitForChild("PlayerGui"))
-sound.SoundId = "rbxassetid://1843529636" -- Örnek: iPhone bildirim sesi
-sound.Volume = 5
-sound:Play()
-
--- Scroll alanı
-local scroll = Instance.new("ScrollingFrame", main)
-scroll.Size = UDim2.new(1, 0, 1, -40)
-scroll.Position = UDim2.new(0, 0, 0, 40)
-scroll.CanvasSize = UDim2.new(0, 0, 0, 1000)
-scroll.ScrollBarThickness = 8
-scroll.BackgroundColor3 = Color3.fromRGB(35,35,35)
-
--- Buton yapıcı
-local function createButton(text, yPos, callback)
-    local btn = Instance.new("TextButton", scroll)
-    btn.Size = UDim2.new(1, -10, 0, 50)
-    btn.Position = UDim2.new(0, 5, 0, yPos)
-    btn.Text = text
-    btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-    btn.TextColor3 = Color3.new(1,1,1)
-    btn.TextScaled = true
-    btn.BorderSizePixel = 0
-    btn.MouseButton1Click:Connect(callback)
+local function addButton(name, text, func)
+    local button = Instance.new("TextButton")
+    button.Name = name
+    button.Parent = Frame
+    button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    button.Size = UDim2.new(1, -10, 0, 50)
+    button.Text = text
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.TextScaled = true
+    button.Font = Enum.Font.SourceSansBold
+    local corner = Instance.new("UICorner", button)
+    button.MouseButton1Click:Connect(func)
 end
 
-local y = 0
+-- 🎵 Açılış sesi + Hoşgeldin yazısı
+local açılışSes = Instance.new("Sound", game.Workspace)
+açılışSes.SoundId = "rbxassetid://911882856" -- iphone bildirim sesi
+açılışSes.Volume = 5
+açılışSes:Play()
 
--- Mobil Fly (dokunma tuşları için basit fly)
-createButton("Mobil Fly Aç/Kapat", y, function()
-    local flying = false
-    local bv = Instance.new("BodyVelocity", char.HumanoidRootPart)
-    bv.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+local welcome = Instance.new("BillboardGui", game.Players.LocalPlayer.Character.Head)
+welcome.Size = UDim2.new(0,200,0,50)
+welcome.StudsOffset = Vector3.new(0,3,0)
+local wText = Instance.new("TextLabel", welcome)
+wText.Size = UDim2.new(1,0,1,0)
+wText.BackgroundTransparency = 1
+wText.Text = "Hoşgeldin Kardeşim!"
+wText.TextColor3 = Color3.fromRGB(255,255,255)
+wText.TextScaled = true
+wText.Font = Enum.Font.SourceSansBold
+game.Players.LocalPlayer.Character.Humanoid.DisplayName = "🌈AvonyXkarpuzHup🌈"
+wait(5)
+welcome:Destroy()
 
-    local userInput = game:GetService("UserInputService")
-    flying = not flying
+-- 🚀 ÖZELLİKLER
 
-    if flying then
-        bv.Velocity = Vector3.new(0,50,0)
-    else
-        bv:Destroy()
-    end
+addButton("Fly", "🕊️ Mobil Fly", function()
+    local p = game.Players.LocalPlayer
+    local c = p.Character or p.CharacterAdded:Wait()
+    local hrp = c:WaitForChild("HumanoidRootPart")
+    local bv = Instance.new("BodyVelocity", hrp)
+    bv.MaxForce = Vector3.new(1e5, 1e5, 1e5)
+    bv.Velocity = Vector3.new(0, 50, 0)
+    wait(5)
+    bv:Destroy()
 end)
-y = y + 60
 
--- Speed
-createButton("Speed x3 / Normal", y, function()
-    local hum = char:FindFirstChildOfClass("Humanoid")
-    if hum then
-        hum.WalkSpeed = hum.WalkSpeed > 16 and 16 or 48
-    end
-end)
-y = y + 60
-
--- NoClip
-local noclip = false
-createButton("NoClip Aç/Kapat", y, function()
-    noclip = not noclip
-end)
-game:GetService("RunService").Stepped:Connect(function()
-    if noclip then
-        for _,v in pairs(char:GetDescendants()) do
-            if v:IsA("BasePart") then
-                v.CanCollide = false
-            end
-        end
-    end
-end)
-y = y + 60
-
--- Rainbow isim
-createButton("RP İsmini Rainbow Yap", y, function()
+addButton("Rainbow", "🌈 Rainbow Karakter + İsim", function()
+    local p = game.Players.LocalPlayer
     while true do
-        for i = 0, 1, 0.1 do
-            char.Head.BrickColor = BrickColor.new(Color3.fromHSV(i, 1, 1))
-            wait(0.1)
+        for i = 0, 1, 0.01 do
+            p.Character.Humanoid.DisplayName = "🌈AvonyXkarpuzHup🌈"
+            p.Character.HumanoidRootPart.BrickColor = BrickColor.new(Color3.fromHSV(i,1,1))
+            wait(0.05)
         end
     end
 end)
-y = y + 60
 
--- Paneli küçült / kapat
-createButton("Paneli Küçült", y, function()
-    main.Visible = not main.Visible
+addButton("TrollSound1", "🎭 Joker Kahkaha (Tüm server duyar)", function()
+    local s = Instance.new("Sound", game.Workspace)
+    s.SoundId = "rbxassetid://1837635154"
+    s.Volume = 10
+    s:Play()
 end)
-y = y + 60
+
+addButton("TrollSound2", "🔊 Bass Boost (Tüm server duyar)", function()
+    local s = Instance.new("Sound", game.Workspace)
+    s.SoundId = "rbxassetid://142376088"
+    s.Volume = 10
+    s:Play()
+end)
+
+addButton("VehicleColor", "🚗 Araç Renk Değiştir", function()
+    for _,v in pairs(workspace.Vehicles:GetChildren()) do
+        if v:FindFirstChild("Body") then
+            v.Body.BrickColor = BrickColor.Random()
+        end
+    end
+end)
+
+addButton("Close", "❌ Paneli Kapat", function()
+    ScreenGui:Destroy()
+end)
