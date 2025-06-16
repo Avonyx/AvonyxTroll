@@ -1,115 +1,54 @@
 local player = game.Players.LocalPlayer
 local mouse = player:GetMouse()
 
--- GUI
-local ScreenGui = Instance.new("ScreenGui", player.PlayerGui)
-ScreenGui.Name = "AvonyxHub"
+local gui = Instance.new("ScreenGui", player.PlayerGui)
+gui.Name = "AvonyxHub"
 
--- LOADING EKRANI
-local loadingFrame = Instance.new("Frame", ScreenGui)
-loadingFrame.Size = UDim2.new(1, 0, 1, 0)
-loadingFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 400, 0, 300)
+frame.Position = UDim2.new(0.5, -200, 0.5, -150)
+frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+frame.Active = true
+frame.Draggable = true
 
-local loadingLabel = Instance.new("TextLabel", loadingFrame)
-loadingLabel.Size = UDim2.new(0, 400, 0, 50)
-loadingLabel.Position = UDim2.new(0.5, -200, 0.5, -25)
-loadingLabel.Text = "AvonyXkarpuzHub Yükleniyor..."
-loadingLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-loadingLabel.BackgroundTransparency = 1
-loadingLabel.TextScaled = true
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1, 0, 0, 50)
+title.Text = "AvonyXkarpuzHub"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+title.TextScaled = true
 
-wait(3) -- 3 saniye loading
+local flyButton = Instance.new("TextButton", frame)
+flyButton.Size = UDim2.new(0, 100, 0, 40)
+flyButton.Position = UDim2.new(0, 10, 0, 60)
+flyButton.Text = "Fly"
+flyButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
 
-loadingFrame:Destroy()
+flyButton.MouseButton1Click:Connect(function()
+    local char = player.Character or player.CharacterAdded:Wait()
+    local hrp = char:WaitForChild("HumanoidRootPart")
 
--- Ana panel
-local mainFrame = Instance.new("Frame", ScreenGui)
-mainFrame.Size = UDim2.new(0, 400, 0, 250)
-mainFrame.Position = UDim2.new(0.5, -200, 0.5, -125)
-mainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-mainFrame.Active = true
-mainFrame.Draggable = true
+    local flying = true
+    local bg = Instance.new("BodyGyro", hrp)
+    local bv = Instance.new("BodyVelocity", hrp)
+    bg.P = 9e4
+    bg.MaxTorque = Vector3.new(9e9,9e9,9e9)
+    bg.CFrame = hrp.CFrame
+    bv.Velocity = Vector3.new(0,0,0)
+    bv.MaxForce = Vector3.new(9e9,9e9,9e9)
 
--- Küçült butonu
-local minimizeBtn = Instance.new("TextButton", mainFrame)
-minimizeBtn.Size = UDim2.new(0, 50, 0, 25)
-minimizeBtn.Position = UDim2.new(1, -55, 0, 5)
-minimizeBtn.Text = "-"
-minimizeBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
-
--- Soldaki kutucuklar
-local leftFrame = Instance.new("Frame", mainFrame)
-leftFrame.Size = UDim2.new(0, 100, 1, -35)
-leftFrame.Position = UDim2.new(0, 0, 0, 35)
-leftFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-
--- Sağ içerik
-local rightFrame = Instance.new("Frame", mainFrame)
-rightFrame.Size = UDim2.new(1, -100, 1, -35)
-rightFrame.Position = UDim2.new(0, 100, 0, 35)
-rightFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-
--- Butonlar
-local buttons = {
-    {Name = "Fly", Action = function()
-        local flying = false
-        local bg, bv
-
-        local function startFly()
-            flying = true
-            local hrp = player.Character:WaitForChild("HumanoidRootPart")
-            bg = Instance.new("BodyGyro", hrp)
-            bg.P = 9e4
-            bg.MaxTorque = Vector3.new(9e9,9e9,9e9)
-            bg.CFrame = hrp.CFrame
-
-            bv = Instance.new("BodyVelocity", hrp)
-            bv.Velocity = Vector3.new(0,0,0)
-            bv.MaxForce = Vector3.new(9e9,9e9,9e9)
-
-            game:GetService("RunService").Heartbeat:Connect(function()
-                if flying then
-                    bg.CFrame = CFrame.new(hrp.Position, hrp.Position + mouse.Hit.lookVector)
-                    bv.Velocity = mouse.Hit.lookVector * 50
-                end
-            end)
+    game:GetService("RunService").Heartbeat:Connect(function()
+        if flying then
+            bg.CFrame = CFrame.new(hrp.Position, hrp.Position + mouse.Hit.lookVector)
+            bv.Velocity = mouse.Hit.lookVector * 50
         end
+    end)
 
-        local function stopFly()
-            flying = false
-            if bg then bg:Destroy() end
-            if bv then bv:Destroy() end
-        end
-
-        if not flying then
-            startFly()
-        else
-            stopFly()
-        end
-    end},
-    {Name = "Rainbow", Action = function()
-        while wait(0.1) do
-            local char = player.Character
-            if char then
-                for _,v in pairs(char:GetDescendants()) do
-                    if v:IsA("BasePart") then
-                        v.BrickColor = BrickColor.Random()
-                    end
-                end
-            end
-        end
-    end}
-}
-
-for i,btn in ipairs(buttons) do
-    local b = Instance.new("TextButton", leftFrame)
-    b.Size = UDim2.new(1, 0, 0, 40)
-    b.Position = UDim2.new(0, 0, 0, (i-1)*45)
-    b.Text = btn.Name
-    b.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-    b.MouseButton1Click:Connect(btn.Action)
-end
-
-minimizeBtn.MouseButton1Click:Connect(function()
-    mainFrame.Visible = false
+    flyButton.Text = "Stop Fly"
+    flyButton.MouseButton1Click:Connect(function()
+        flying = false
+        bg:Destroy()
+        bv:Destroy()
+        flyButton.Text = "Fly"
+    end)
 end)
