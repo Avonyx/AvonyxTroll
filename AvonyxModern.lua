@@ -1,91 +1,115 @@
 local player = game.Players.LocalPlayer
 local gui = Instance.new("ScreenGui", player.PlayerGui)
-gui.Name = "AvonyXModern"
+gui.Name = "AvonyXkarpuzHup"
 gui.ResetOnSpawn = false
 
-local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 600, 0, 400)
-frame.Position = UDim2.new(0.5, -300, 0.5, -200)
-frame.BackgroundColor3 = Color3.fromHSV(0,1,1)
-frame.Active = true
-frame.Draggable = true
+local bar = Instance.new("Frame", gui)
+bar.Size = UDim2.new(0, 160, 1, 0)
+bar.Position = UDim2.new(0, 0, 0, 0)
+bar.BackgroundColor3 = Color3.fromHSV(0,1,1)
 
 spawn(function()
     while wait() do
-        frame.BackgroundColor3 = Color3.fromHSV(tick() % 5 / 5, 1, 1)
+        bar.BackgroundColor3 = Color3.fromHSV(tick() % 5 / 5, 1, 1)
     end
 end)
 
+local yOffset = 0
+
+local function createButton(name, action)
+    local btn = Instance.new("TextButton", bar)
+    btn.Size = UDim2.new(1, 0, 0, 30)
+    btn.Position = UDim2.new(0, 0, 0, yOffset)
+    btn.Text = name
+    btn.TextColor3 = Color3.new(1,1,1)
+    btn.BackgroundColor3 = Color3.fromRGB(50,50,50)
+    btn.MouseButton1Click:Connect(action)
+    yOffset = yOffset + 35
+end
+
+-- Kapat
+createButton("❌ Kapat", function()
+    gui:Destroy()
+end)
+
+-- Küçült
+createButton("➖ Küçült", function()
+    bar.Visible = not bar.Visible
+end)
+
+-- ESP
+createButton("👀 ESP Aç", function()
+    for _, plr in pairs(game.Players:GetPlayers()) do
+        if plr ~= player and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+            local box = Instance.new("BoxHandleAdornment", plr.Character.HumanoidRootPart)
+            box.Size = Vector3.new(4,6,2)
+            box.Adornee = plr.Character.HumanoidRootPart
+            box.AlwaysOnTop = true
+            box.ZIndex = 10
+            box.Color3 = Color3.fromRGB(255,0,0)
+            box.Transparency = 0.5
+        end
+    end
+end)
+
+-- GodMode
+createButton("💀 GodMode Aç", function()
+    if player.Character:FindFirstChild("Humanoid") then
+        player.Character.Humanoid.Name = "GodHumanoid"
+    end
+end)
+
+-- Fly
+createButton("🚀 Mobil Fly Aç", function()
+    local hrp = player.Character:WaitForChild("HumanoidRootPart")
+    local bv = Instance.new("BodyVelocity", hrp)
+    bv.MaxForce = Vector3.new(1e9,1e9,1e9)
+    bv.Velocity = Vector3.new(0,0,0)
+    game:GetService("RunService").RenderStepped:Connect(function()
+        bv.Velocity = workspace.CurrentCamera.CFrame.LookVector * 50 + Vector3.new(0,30,0)
+    end)
+end)
+
+-- Araç renklendir
+createButton("🚗 Araç Renk Random", function()
+    for _, v in pairs(workspace:GetChildren()) do
+        if v:IsA("Model") and v:FindFirstChild("VehicleSeat") then
+            for _, p in pairs(v:GetDescendants()) do
+                if p:IsA("BasePart") then
+                    p.BrickColor = BrickColor.Random()
+                end
+            end
+        end
+    end
+end)
+
+-- Hız arttır
+createButton("⚡ Hız 100", function()
+    if player.Character:FindFirstChildOfClass("Humanoid") then
+        player.Character:FindFirstChildOfClass("Humanoid").WalkSpeed = 100
+    end
+end)
+
+-- Rainbow isim
+spawn(function()
+    while wait(0.5) do
+        if player.Character and player.Character:FindFirstChild("Humanoid") then
+            player.Character.Humanoid.DisplayName = "[🌈 AvonyXkarpuz 🌈]"
+        end
+    end
+end)
+
+-- Açılış ekranı ve sesi
 local opening = Instance.new("TextLabel", gui)
 opening.Size = UDim2.new(0, 400, 0, 100)
 opening.Position = UDim2.new(0.5, -200, 0.3, 0)
-opening.Text = "🌈 AvonyX Modern Hile Açıldı 🌈"
+opening.Text = "🌟 AvonyXkarpuz Hup Başlatıldı 🌟"
 opening.TextScaled = true
 opening.BackgroundTransparency = 1
 
 local s = Instance.new("Sound", workspace)
-s.SoundId = "rbxassetid://594319143" -- Ahhh sesi
+s.SoundId = "rbxassetid://594319143"
 s.Volume = 5
 s:Play()
 wait(5)
 opening:Destroy()
-
--- Karakter ismini değiştir
-spawn(function()
-    while wait(0.5) do
-        if player.Character and player.Character:FindFirstChild("Humanoid") then
-            player.Character.Humanoid.DisplayName = "[🌈 AvonyXkarpuzHups 🌈]"
-        end
-    end
-end)
-
--- Kategoriler
-local categories = {
-    {name="Fly", func=function()
-        local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-        if hrp then
-            local bv = Instance.new("BodyVelocity", hrp)
-            local bg = Instance.new("BodyGyro", hrp)
-            bv.MaxForce = Vector3.new(1e9,1e9,1e9)
-            bg.MaxTorque = Vector3.new(1e9,1e9,1e9)
-            bv.Velocity = Vector3.new(0,0,0)
-            game:GetService("RunService").RenderStepped:Connect(function()
-                if hrp then
-                    bv.Velocity = hrp.CFrame.LookVector * 100 + Vector3.new(0,50,0)
-                    bg.CFrame = workspace.CurrentCamera.CFrame
-                end
-            end)
-        end
-    end},
-    {name="Sesler", func=function()
-        local sesler = {
-            {name="Joker Kahkaha", id="7149254326"},
-            {name="Bass", id="1843146094"},
-            {name="Anime Sesi", id="6706032957"},
-            {name="Kefo Wanda Nara", id="8724729001"},
-            {name="Basslı Ses", id="1843146094"},
-            {name="Küfür", id="9122278204"}
-        }
-        for i,ses in ipairs(sesler) do
-            local b = Instance.new("TextButton", frame)
-            b.Size = UDim2.new(0, 150, 0, 30)
-            b.Position = UDim2.new(0, 120, 0, 10 + (i-1)*35)
-            b.Text = ses.name
-            b.MouseButton1Click:Connect(function()
-                local snd = Instance.new("Sound", workspace)
-                snd.SoundId = "rbxassetid://"..ses.id
-                snd.Volume = 10
-                snd:Play()
-            end)
-        end
-    end}
-}
-
--- Kategori butonları
-for i, cat in ipairs(categories) do
-    local btn = Instance.new("TextButton", frame)
-    btn.Size = UDim2.new(0, 100, 0, 30)
-    btn.Position = UDim2.new(0, 10, 0, 10 + (i-1)*35)
-    btn.Text = cat.name
-    btn.MouseButton1Click:Connect(cat.func)
-end
