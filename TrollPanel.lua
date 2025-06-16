@@ -1,5 +1,4 @@
--- AvonyXkarpuzHup | Modern Brookhaven GUI
--- GUI başlangıç kodu
+-- AvonyXkarpuzHup | Yenilikçi Modern Brookhaven GUI
 
 local ScreenGui = Instance.new("ScreenGui")
 local MainFrame = Instance.new("Frame")
@@ -13,10 +12,10 @@ ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
 MainFrame.Name = "MainFrame"
 MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 MainFrame.BorderSizePixel = 0
 MainFrame.Position = UDim2.new(0.2, 0, 0.2, 0)
-MainFrame.Size = UDim2.new(0, 500, 0, 300)
+MainFrame.Size = UDim2.new(0, 600, 0, 400)
 MainFrame.Active = true
 MainFrame.Draggable = true
 
@@ -24,14 +23,14 @@ TabsFrame.Name = "TabsFrame"
 TabsFrame.Parent = MainFrame
 TabsFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 TabsFrame.BorderSizePixel = 0
-TabsFrame.Size = UDim2.new(0, 100, 1, 0)
+TabsFrame.Size = UDim2.new(0, 120, 1, 0)
 
 ContentFrame.Name = "ContentFrame"
 ContentFrame.Parent = MainFrame
-ContentFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+ContentFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 ContentFrame.BorderSizePixel = 0
-ContentFrame.Position = UDim2.new(0, 100, 0, 0)
-ContentFrame.Size = UDim2.new(1, -100, 1, 0)
+ContentFrame.Position = UDim2.new(0, 120, 0, 0)
+ContentFrame.Size = UDim2.new(1, -120, 1, 0)
 
 CloseButton.Name = "CloseButton"
 CloseButton.Parent = MainFrame
@@ -50,54 +49,49 @@ MinimizeButton.Size = UDim2.new(0, 30, 0, 30)
 MinimizeButton.Position = UDim2.new(1, -60, 0, 0)
 MinimizeButton.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
 MinimizeButton.MouseButton1Click:Connect(function()
-    if ContentFrame.Visible then
-        ContentFrame.Visible = false
-        TabsFrame.Visible = false
-    else
-        ContentFrame.Visible = true
-        TabsFrame.Visible = true
-    end
+    ContentFrame.Visible = not ContentFrame.Visible
+    TabsFrame.Visible = not TabsFrame.Visible
 end)
 
--- Örnek tab ve butonlar
-local function createTab(name, callback)
+local tabButtons = {}
+local function createTab(name)
     local button = Instance.new("TextButton")
     button.Text = name
     button.Parent = TabsFrame
-    button.Size = UDim2.new(1, 0, 0, 50)
+    button.Size = UDim2.new(1, 0, 0, 40)
     button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-    button.MouseButton1Click:Connect(callback)
+    button.MouseButton1Click:Connect(function()
+        ContentFrame:ClearAllChildren()
+        local label = Instance.new("TextLabel")
+        label.Text = name .. " Özellikleri"
+        label.Size = UDim2.new(1, 0, 1, 0)
+        label.BackgroundTransparency = 1
+        label.TextColor3 = Color3.new(1,1,1)
+        label.TextScaled = true
+        label.Parent = ContentFrame
+    end)
+    table.insert(tabButtons, button)
 end
 
-createTab("Troll", function()
-    print("Troll özellikleri seçildi")
-end)
+createTab("Troll")
+createTab("Fly")
+createTab("Araç")
+createTab("Görünüm")
 
-createTab("Fly", function()
-    print("Fly özellikleri seçildi")
-end)
-
-createTab("Araç", function()
-    print("Araç özellikleri seçildi")
-end)
-
-createTab("Görünüm", function()
-    print("Görünüm özellikleri seçildi")
-end)
-
--- Karakter RP ismi rainbow yap
 spawn(function()
     while wait(0.5) do
         local player = game.Players.LocalPlayer
         if player and player.Character then
-            player.Character:FindFirstChildOfClass("Humanoid").DisplayName = "<font color=\"rgb("..math.random(0,255)..","..math.random(0,255)..","..math.random(0,255)..")\">AvonyXkarpuzHup</font>"
+            local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid.DisplayName = "<font color=\"rgb("..math.random(0,255)..","..math.random(0,255)..","..math.random(0,255)..")\">AvonyXkarpuzHup</font>"
+            end
         end
     end
 end)
 
--- Açılış sesi
 local sound = Instance.new("Sound")
-sound.SoundId = "rbxassetid://9118828566" -- iPhone bildirim sesi örnek
+sound.SoundId = "rbxassetid://9118828566"
 sound.Volume = 5
 sound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 sound:Play()
