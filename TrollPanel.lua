@@ -1,21 +1,20 @@
 local plr = game.Players.LocalPlayer
 local gui = Instance.new("ScreenGui", plr.PlayerGui)
-gui.Name = "AvonyXkarpuzHup"
+gui.Name = "AvonyXkarpuzXY"
 
 local frame = Instance.new("Frame", gui)
 frame.Size = UDim2.new(0, 400, 0, 300)
 frame.Position = UDim2.new(0.5, -200, 0.5, -150)
-frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 
 local title = Instance.new("TextLabel", frame)
 title.Size = UDim2.new(1, 0, 0, 40)
-title.Text = "🌈 AvonyXkarpuzHup 🌈"
-title.TextScaled = true
+title.Text = "AvonyXkarpuzXY"
 title.TextColor3 = Color3.new(1,1,1)
-title.BackgroundColor3 = Color3.fromRGB(60,60,60)
+title.TextScaled = true
+title.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 
 local y = 50
-
 local function createButton(text, action)
     local btn = Instance.new("TextButton", frame)
     btn.Size = UDim2.new(1, -20, 0, 40)
@@ -23,7 +22,7 @@ local function createButton(text, action)
     btn.Text = text
     btn.TextScaled = true
     btn.TextColor3 = Color3.new(1,1,1)
-    btn.BackgroundColor3 = Color3.fromRGB(math.random(80,200), math.random(80,200), math.random(80,200))
+    btn.BackgroundColor3 = Color3.fromRGB(math.random(100,200), math.random(100,200), math.random(100,200))
     y = y + 45
     btn.MouseButton1Click:Connect(action)
 end
@@ -31,6 +30,11 @@ end
 -- Fly
 createButton("🚀 Fly", function()
     loadstring(game:HttpGet("https://pastebin.com/raw/yL8iP7C4"))()
+end)
+
+-- Noclip
+createButton("🌟 Noclip", function()
+    loadstring(game:HttpGet("https://pastebin.com/raw/7P4hQvGj"))()
 end)
 
 -- Araç renk değiştir
@@ -46,12 +50,9 @@ createButton("🚗 Araç Renk", function()
     end
 end)
 
--- Troll ses (örnek)
-createButton("💀 Troll Ses (Joker Kahkaha)", function()
-    local s = Instance.new("Sound", workspace)
-    s.SoundId = "rbxassetid://5410086218"
-    s.Volume = 10
-    s:Play()
+-- Infinite yield
+createButton("⚡ Infinite Yield", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
 end)
 
 -- Panel kapat
@@ -59,7 +60,13 @@ createButton("❌ Kapat", function()
     gui:Destroy()
 end)
 
--- Rainbow isim
+-- Açılışta iPhone sesi
+local openSound = Instance.new("Sound", workspace)
+openSound.SoundId = "rbxassetid://9118828567" -- iPhone bildirim sesi
+openSound.Volume = 5
+openSound:Play()
+
+-- Rainbow DisplayName
 spawn(function()
     local colors = {
         Color3.new(1,0,0),
@@ -73,16 +80,9 @@ spawn(function()
     while gui.Parent do
         for _, c in pairs(colors) do
             pcall(function()
-                plr.DisplayName = "🌈 AvonyXkarpuzHup 🌈"
-                game:GetService("Players").LocalPlayer.Character.Head.BrickColor = BrickColor.new(c)
+                plr.DisplayName = "🌈 AvonyXkarpuzXY"
             end)
             wait(0.3)
         end
     end
 end)
-
--- Açılışta ses
-local openSound = Instance.new("Sound", workspace)
-openSound.SoundId = "rbxassetid://9118828567" -- iPhone bildirim sesi
-openSound.Volume = 5
-openSound:Play()
