@@ -1,4 +1,4 @@
--- 🌈 Avonyx Yeni Troll Panel V1
+    -- 🌈 Avonyx Yeni Troll Panel V1
 local plr = game.Players.LocalPlayer
 
 -- İsim değiştir
