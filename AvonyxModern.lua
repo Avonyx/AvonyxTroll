@@ -1,70 +1,102 @@
--- Gumball Hup Light - Brookhaven
 local player = game.Players.LocalPlayer
-local gui = Instance.new("ScreenGui", game.CoreGui)
-gui.Name = "GumballHupPC"
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+gui.Name = "AvonyXUniversalHile"
 gui.ResetOnSpawn = false
 
--- Ana Çerçeve
 local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 400, 0, 300)
-frame.Position = UDim2.new(0.5, -200, 0.5, -150)
-frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+frame.Size = UDim2.new(0, 500, 0, 350)
+frame.Position = UDim2.new(0.5, -250, 0.5, -175)
+frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 frame.Active = true
 frame.Draggable = true
 
--- Sol Menü
 local sol = Instance.new("Frame", frame)
-sol.Size = UDim2.new(0, 120, 1, 0)
-sol.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+sol.Size = UDim2.new(0, 150, 1, 0)
+sol.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 
--- Sağ Panel
 local sağ = Instance.new("Frame", frame)
-sağ.Size = UDim2.new(0, 280, 1, 0)
-sağ.Position = UDim2.new(0, 120, 0, 0)
-sağ.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+sağ.Size = UDim2.new(0, 350, 1, 0)
+sağ.Position = UDim2.new(0, 150, 0, 0)
+sağ.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 
--- Buton Ekle Fonksiyonu
-local function butonEkle(y, yazı, işlem)
+local function addKutucuk(y, text, action)
     local btn = Instance.new("TextButton", sol)
     btn.Size = UDim2.new(1, -10, 0, 40)
     btn.Position = UDim2.new(0, 5, 0, y)
-    btn.Text = yazı
-    btn.TextColor3 = Color3.new(1, 1, 1)
-    btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-    btn.Font = Enum.Font.SourceSansBold
-    btn.TextSize = 18
-    btn.MouseButton1Click:Connect(işlem)
+    btn.Text = text
+    btn.TextColor3 = Color3.new(1,1,1)
+    btn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+    btn.MouseButton1Click:Connect(action)
 end
 
--- Fly (Infinite Yield üzerinden)
-butonEkle(10, "Fly (Infinite Yield)", function()
+-- Fly
+addKutucuk(10, "Fly", function()
     sağ:ClearAllChildren()
-    local label = Instance.new("TextLabel", sağ)
-    label.Size = UDim2.new(1, -20, 0, 60)
-    label.Position = UDim2.new(0, 10, 0, 20)
-    label.Text = "Infinite Yield yükleniyor..."
-    label.BackgroundTransparency = 1
-    label.TextColor3 = Color3.new(1,1,1)
-    label.TextWrapped = true
-    label.Font = Enum.Font.SourceSans
-    label.TextSize = 20
-
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+    local state = false
+    local flyBtn = Instance.new("TextButton", sağ)
+    flyBtn.Size = UDim2.new(0, 200, 0, 50)
+    flyBtn.Position = UDim2.new(0, 20, 0, 20)
+    flyBtn.Text = "Fly Aç"
+    local bg, bv
+    flyBtn.MouseButton1Click:Connect(function()
+        if not state then
+            state = true
+            flyBtn.Text = "Fly Kapat"
+            bg = Instance.new("BodyGyro", player.Character.HumanoidRootPart)
+            bv = Instance.new("BodyVelocity", player.Character.HumanoidRootPart)
+            bg.MaxTorque = Vector3.new(9e9,9e9,9e9)
+            bv.MaxForce = Vector3.new(9e9,9e9,9e9)
+            game:GetService("RunService").RenderStepped:Connect(function()
+                if state then
+                    bg.CFrame = workspace.CurrentCamera.CFrame
+                    bv.Velocity = workspace.CurrentCamera.CFrame.LookVector * 50
+                end
+            end)
+        else
+            state = false
+            flyBtn.Text = "Fly Aç"
+            if bg then bg:Destroy() end
+            if bv then bv:Destroy() end
+        end
+    end)
 end)
 
--- ESP Sistemi
-butonEkle(60, "ESP", function()
+-- GodMode
+addKutucuk(60, "GodMode", function()
     sağ:ClearAllChildren()
-    local aktif = false
-    local espList = {}
+    local state = false
     local btn = Instance.new("TextButton", sağ)
     btn.Size = UDim2.new(0, 200, 0, 50)
     btn.Position = UDim2.new(0, 20, 0, 20)
-    btn.Text = "ESP Aç"
+    btn.Text = "GodMode Aç"
     btn.MouseButton1Click:Connect(function()
-        if not aktif then
-            aktif = true
-            btn.Text = "ESP Kapat"
+        if not state then
+            state = true
+            btn.Text = "GodMode Kapat"
+            player.Character.Humanoid.MaxHealth = math.huge
+            player.Character.Humanoid.Health = math.huge
+        else
+            state = false
+            btn.Text = "GodMode Aç"
+            player.Character.Humanoid.MaxHealth = 100
+            player.Character.Humanoid.Health = 100
+        end
+    end)
+end)
+
+-- ESP
+addKutucuk(110, "ESP", function()
+    sağ:ClearAllChildren()
+    local state = false
+    local espList = {}
+    local espBtn = Instance.new("TextButton", sağ)
+    espBtn.Size = UDim2.new(0, 200, 0, 50)
+    espBtn.Position = UDim2.new(0, 20, 0, 20)
+    espBtn.Text = "ESP Aç"
+    espBtn.MouseButton1Click:Connect(function()
+        if not state then
+            state = true
+            espBtn.Text = "ESP Kapat"
             for _, p in pairs(game.Players:GetPlayers()) do
                 if p ~= player and p.Character and p.Character:FindFirstChild("Head") then
                     local b = Instance.new("BillboardGui", p.Character.Head)
@@ -79,8 +111,8 @@ butonEkle(60, "ESP", function()
                 end
             end
         else
-            aktif = false
-            btn.Text = "ESP Aç"
+            state = false
+            espBtn.Text = "ESP Aç"
             for _, b in pairs(espList) do
                 b:Destroy()
             end
@@ -89,43 +121,23 @@ butonEkle(60, "ESP", function()
     end)
 end)
 
--- Brookhaven Otomatik İsim Değiştirici
-butonEkle(110, "İsmini Değiştir", function()
+-- HD Admin
+addKutucuk(160, "HD Admin", function()
     sağ:ClearAllChildren()
-    local box = Instance.new("TextBox", sağ)
-    box.Size = UDim2.new(0, 200, 0, 40)
-    box.Position = UDim2.new(0, 20, 0, 20)
-    box.PlaceholderText = "Yeni ismini gir"
-    box.Text = ""
-    box.TextColor3 = Color3.new(1, 1, 1)
-    box.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-    box.Font = Enum.Font.SourceSansBold
-    box.TextSize = 18
-
     local btn = Instance.new("TextButton", sağ)
-    btn.Size = UDim2.new(0, 200, 0, 40)
-    btn.Position = UDim2.new(0, 20, 0, 70)
-    btn.Text = "Uygula"
-    btn.TextColor3 = Color3.new(1,1,1)
-    btn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-    btn.Font = Enum.Font.SourceSansBold
-    btn.TextSize = 18
-
+    btn.Size = UDim2.new(0, 200, 0, 50)
+    btn.Position = UDim2.new(0, 20, 0, 20)
+    btn.Text = "HD Admin Yükle"
     btn.MouseButton1Click:Connect(function()
-        local chatEvent = nil
-        for _, v in pairs(getgc(true)) do
-            if typeof(v) == "function" and getfenv(v).script and getfenv(v).script.Name == "NameHandler" then
-                chatEvent = getfenv(v).script
-                break
-            end
-        end
-
-        local name = box.Text
-        local args = {[1] = "ChangeName",[2] = name}
-        game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(name, "All")
-
-        if chatEvent then
-            chatEvent.RemoteEvent:FireServer(unpack(args))
-        end
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
     end)
+end)
+
+-- Küçült
+local küçült = Instance.new("TextButton", frame)
+küçült.Size = UDim2.new(0, 30, 0, 30)
+küçült.Position = UDim2.new(1, -35, 0, 5)
+küçült.Text = "-"
+küçült.MouseButton1Click:Connect(function()
+    frame.Visible = not frame.Visible
 end)
